@@ -1,6 +1,7 @@
 import {createValidateEquals} from 'typia';
 
 export type Config = {
+  $schema?: string;
   directories: {
     path?: string;
     include?: string[];

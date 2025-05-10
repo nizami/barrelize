@@ -4,6 +4,7 @@ import {writeFile} from 'node:fs/promises';
 import {dirname, resolve} from 'node:path';
 
 const configTemplate: Config = {
+  $schema: 'node_modules/barrelize/schema.json',
   directories: [
     {
       path: 'src',
