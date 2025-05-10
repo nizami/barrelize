@@ -43,6 +43,7 @@
     "bin",
     "lib"
   ],
+  "types": "./lib/src/index.d.ts",
   "exports": {
     ".": {
       "types": "./lib/src/index.d.ts",
