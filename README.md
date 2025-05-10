@@ -8,6 +8,7 @@ Barrelize simplifies module exports by creating clean, centralized `index.js` or
 [![GitHub License](https://img.shields.io/github/license/nizami/barrelize)](https://opensource.org/licenses/MIT)
 
 ## Features
+
 - **Automatic Barrel Generation**: Scans directories and creates index files with exports for all modules.
 - **TypeScript Support**: Seamlessly works with TypeScript projects, preserving type safety.
 - **Customizable**: Configure file patterns, ignore specific files, or customize export styles (named, default, or both).
@@ -15,15 +16,15 @@ Barrelize simplifies module exports by creating clean, centralized `index.js` or
 - **CLI & API**: Use via command line for quick setups or integrate programmatically in your build scripts.
 
 ### Why Use Barrelize?
+
 - **Save Time**: Eliminate manual creation and maintenance of barrel files.
 - **Cleaner Imports**: Simplify import statements with a single entry point for each directory.
 - **Scalable**: Ideal for large projects with complex folder structures.
 
-
 ## Installation
 
 ```bash
-npm install -D barrelize
+npm install --save-dev barrelize
 ```
 
 ## Quick Start
@@ -62,17 +63,24 @@ npx barrelize -c barrelize.json # Uses custom config file
 
 ## Configuration
 
-Create a `.barrelize` file in your project root:
+Create a `.barrelize` file in your project root. The configuration file uses JSON5 format, which supports comments and is more flexible than standard JSON:
 
-```json
+```jsonc
 {
+  // Configure multiple directories to generate barrels for
   "directories": [
     {
+      // Root directory to start from
       "path": "src",
+      // Files to include in the barrel
       "include": ["**/*.ts", "**/*.tsx"],
+      // Files to exclude from the barrel
       "exclude": ["**/*.test.ts", "**/*.spec.ts"],
+      // Optional ordering of exports
       "order": ["types", "constants", "utils"],
+      // Whether to keep file extensions in exports
       "keepFileExtension": true,
+      // Optional string replacements in export paths
       "replace": [
         {
           "find": ".ts$",
