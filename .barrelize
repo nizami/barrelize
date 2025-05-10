@@ -1,9 +1,10 @@
 {
+  "$schema": "schema.json",
   "directories": [
     {
       "path": "src",
       "include": ["**/*.ts"],
-      "exclude": ["**/*.test.ts"],
+      "exclude": ["**/*.test.ts", "schema/**"],
       "order": ["cli", "cli/commands"],
       "indexFilePath": "index.ts"
     }

@@ -1,0 +1,65 @@
+{
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "directories": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "include": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "exclude": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "order": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "indexFilePath": {
+            "type": "string"
+          },
+          "keepFileExtension": {
+            "type": "boolean"
+          },
+          "replace": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "find": {
+                  "type": "string"
+                },
+                "replacement": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "find",
+                "replacement"
+              ]
+            }
+          }
+        },
+        "required": []
+      }
+    }
+  },
+  "required": [
+    "directories"
+  ]
+}
