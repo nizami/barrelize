@@ -19,14 +19,12 @@
   ],
   "author": "Nizami",
   "license": "MIT",
-  "dependencies": {
-    "cac": "^6.7.14",
-    "glob": "^11.0.2",
-    "json5": "^2.2.3"
-  },
   "devDependencies": {
     "@ryoppippi/unplugin-typia": "^2.2.1",
     "@types/node": "^22.15.17",
+    "cac": "^6.7.14",
+    "glob": "^11.0.2",
+    "json5": "^2.2.3",
     "ts-patch": "^3.3.0",
     "typescript": "~5.8.3",
     "typia": "^9.2.0",
