@@ -2,9 +2,9 @@ import {createValidateEquals} from 'typia';
 
 export type Config = {
   directories: {
-    path: string;
-    include: string[];
-    exclude: string[];
+    path?: string;
+    include?: string[];
+    exclude?: string[];
     order?: string[];
     indexFilePath?: string;
     keepFileExtension?: boolean;

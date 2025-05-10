@@ -9,7 +9,7 @@ const DEFAULT_INDEX_FILE_PATH = 'index.ts';
 export async function generateBarrels(rootPath: string, config: Config): Promise<void> {
   for (const directoryConfig of config.directories) {
     const indexFileBasePath = directoryConfig.indexFilePath ?? DEFAULT_INDEX_FILE_PATH;
-    const indexFileRelativePath = join(directoryConfig.path, indexFileBasePath);
+    const indexFileRelativePath = join(directoryConfig.path ?? '', indexFileBasePath);
     const indexFileAbsolutePath = resolve(rootPath, indexFileRelativePath);
     const indexDirectory = dirname(indexFileAbsolutePath);
 
@@ -36,10 +36,15 @@ async function generateBarrel(
   rootPath: string,
   directoryConfig: Config['directories'][0],
 ): Promise<string[]> {
-  const ignore = [...directoryConfig.exclude, '**/index.ts', '**/index.js'];
-  const cwd = resolve(rootPath, directoryConfig.path);
+  const ignore = [...(directoryConfig.exclude ?? []), '**/index.ts', '**/index.js'];
+  const cwd = resolve(rootPath, directoryConfig.path ?? '');
 
-  let files = await glob(directoryConfig.include, {cwd, ignore, nodir: true, includeChildMatches: true});
+  let files = await glob(directoryConfig.include ?? '**/*', {
+    cwd,
+    ignore,
+    nodir: true,
+    includeChildMatches: true,
+  });
   files = files.map((file) => file.replace(/\\/g, '/'));
   files = handleFileExtension(directoryConfig, files);
   files = handleOrder(directoryConfig, files);
