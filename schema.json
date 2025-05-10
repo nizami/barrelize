@@ -11,33 +11,35 @@
         "type": "object",
         "properties": {
           "path": {
-            "type": "string"
+            "type": "string",
+            "default": ""
           },
           "include": {
             "type": "array",
             "items": {
               "type": "string"
-            }
+            },
+            "default": [
+              "**/*.ts"
+            ]
           },
           "exclude": {
             "type": "array",
             "items": {
               "type": "string"
-            }
+            },
+            "default": []
           },
           "order": {
             "type": "array",
             "items": {
               "type": "string"
-            }
+            },
+            "default": []
           },
           "indexFilePath": {
             "type": "string",
             "default": "index.ts"
-          },
-          "keepFileExtension": {
-            "type": "boolean",
-            "default": true
           },
           "replace": {
             "type": "array",
@@ -51,13 +53,24 @@
                   "type": "string"
                 }
               },
-              "required": ["find", "replacement"]
-            }
+              "required": [
+                "find",
+                "replacement"
+              ]
+            },
+            "default": [
+              {
+                "find": "\\.ts$",
+                "replacement": ""
+              }
+            ]
           }
         },
         "required": []
       }
     }
   },
-  "required": ["directories"]
+  "required": [
+    "directories"
+  ]
 }
