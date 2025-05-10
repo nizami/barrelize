@@ -8,9 +8,17 @@ export type Config = {
     exclude?: string[];
     order?: string[];
     indexFilePath?: string;
-    keepFileExtension?: boolean;
     replace?: {find: string; replacement: string}[];
   }[];
+};
+
+export const DEFAULT_CONFIG: Required<Config['directories'][0]> = {
+  path: '',
+  include: ['**/*.ts'],
+  exclude: [],
+  order: [],
+  indexFilePath: 'index.ts',
+  replace: [{find: '\\.ts$', replacement: ''}],
 };
 
 export const validateConfig = createValidateEquals<Config>();
