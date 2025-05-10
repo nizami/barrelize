@@ -10,7 +10,6 @@ const configTemplate: Config = {
       path: 'src',
       include: ['**/*.ts'],
       exclude: ['**/*.test.ts'],
-      order: ['models', 'api'],
       indexFilePath: 'index.ts',
     },
   ],
