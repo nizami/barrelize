@@ -1,15 +1,13 @@
-import {colorize, Config, logError, logWarning, TerminalColor} from '#lib';
+import {colorize, Config, DEFAULT_CONFIG, logError, logWarning, TerminalColor} from '#lib';
 import {glob} from 'glob';
 import {existsSync} from 'node:fs';
 import {writeFile} from 'node:fs/promises';
 import {dirname, join, resolve} from 'node:path';
 
-const DEFAULT_INDEX_FILE_PATH = 'index.ts';
-
 export async function generateBarrels(rootPath: string, config: Config): Promise<void> {
   for (const directoryConfig of config.directories) {
-    const indexFileBasePath = directoryConfig.indexFilePath ?? DEFAULT_INDEX_FILE_PATH;
-    const indexFileRelativePath = join(directoryConfig.path ?? '', indexFileBasePath);
+    const indexFileBasePath = directoryConfig.indexFilePath ?? DEFAULT_CONFIG.indexFilePath;
+    const indexFileRelativePath = join(directoryConfig.path ?? DEFAULT_CONFIG.path, indexFileBasePath);
     const indexFileAbsolutePath = resolve(rootPath, indexFileRelativePath);
     const indexDirectory = dirname(indexFileAbsolutePath);
 
@@ -36,38 +34,27 @@ async function generateBarrel(
   rootPath: string,
   directoryConfig: Config['directories'][0],
 ): Promise<string[]> {
-  const ignore = [...(directoryConfig.exclude ?? []), '**/index.ts', '**/index.js'];
-  const cwd = resolve(rootPath, directoryConfig.path ?? '');
+  const ignore = [...(directoryConfig.exclude ?? DEFAULT_CONFIG.exclude), '**/index.ts', '**/index.js'];
+  const cwd = resolve(rootPath, directoryConfig.path ?? DEFAULT_CONFIG.path);
 
-  let files = await glob(directoryConfig.include ?? '**/*', {
+  let files = await glob(directoryConfig.include ?? DEFAULT_CONFIG.include, {
     cwd,
     ignore,
     nodir: true,
     includeChildMatches: true,
   });
   files = files.map((file) => file.replace(/\\/g, '/'));
-  files = handleFileExtension(directoryConfig, files);
   files = handleOrder(directoryConfig, files);
   files = handlePathReplacement(directoryConfig, files);
 
   return files;
 }
 
-function handleFileExtension(config: Config['directories'][0], files: string[]): string[] {
-  if (!config.keepFileExtension) {
-    return files.map((file) => file.replace(/\.ts$/, ''));
-  }
-
-  return files;
-}
-
 function handlePathReplacement(config: Config['directories'][0], files: string[]): string[] {
-  if (!config.replace?.length) {
-    return files;
-  }
+  const replaces = config.replace ?? DEFAULT_CONFIG.replace;
 
-  for (let i = 0; i < config.replace.length; i++) {
-    const {find, replacement} = config.replace[i];
+  for (let i = 0; i < replaces.length; i++) {
+    const {find, replacement} = replaces[i];
 
     try {
       const regexp = new RegExp(find);
@@ -91,8 +78,9 @@ function handlePathReplacement(config: Config['directories'][0], files: string[]
 
 function handleOrder(config: Config['directories'][0], files: string[]): string[] {
   files = files.sort((a, b) => a.localeCompare(b));
+  const orders = config.order ?? DEFAULT_CONFIG.order;
 
-  if (!config.order?.length) {
+  if (!orders.length) {
     return files;
   }
 
