@@ -5,7 +5,6 @@
 Barrelize simplifies module exports by creating clean, centralized `index.js` or `index.ts` files, reducing boilerplate and improving project organization.
 
 [![NPM Version](https://img.shields.io/npm/v/barrelize)](https://www.npmjs.com/package/barrelize)
-
 [![GitHub License](https://img.shields.io/github/license/nizami/barrelize)
 ](https://opensource.org/licenses/MIT)
 
