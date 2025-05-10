@@ -1,4 +1,5 @@
 {
+  "$schema": "http://json-schema.org/draft-07/schema",
   "type": "object",
   "properties": {
     "$schema": {
@@ -31,10 +32,12 @@
             }
           },
           "indexFilePath": {
-            "type": "string"
+            "type": "string",
+            "default": "index.ts"
           },
           "keepFileExtension": {
-            "type": "boolean"
+            "type": "boolean",
+            "default": true
           },
           "replace": {
             "type": "array",
@@ -48,10 +51,7 @@
                   "type": "string"
                 }
               },
-              "required": [
-                "find",
-                "replacement"
-              ]
+              "required": ["find", "replacement"]
             }
           }
         },
@@ -59,7 +59,5 @@
       }
     }
   },
-  "required": [
-    "directories"
-  ]
+  "required": ["directories"]
 }
