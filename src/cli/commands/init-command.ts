@@ -36,6 +36,9 @@ export async function runInitCommand(baseConfigFilePath: string) {
 
   await writeFile(configFilePath, configTemplateJson);
 
-  console.log(colorize(baseConfigFilePath, TerminalColor.CYAN), colorize(`file created`, TerminalColor.GRAY));
+  console.log(
+    colorize(baseConfigFilePath, TerminalColor.CYAN),
+    colorize(`config file created`, TerminalColor.GRAY),
+  );
   console.log(colorize(configTemplateJson, TerminalColor.GREEN));
 }
