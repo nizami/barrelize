@@ -1,0 +1,52 @@
+{
+  "name": "barrelize",
+  "version": "1.0.0",
+  "description": "Automatically generating index (barrel) files",
+  "scripts": {
+    "build": "vite build",
+    "prepare": "ts-patch install",
+    "test": "vitest run"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com/nizami/barrelize"
+  },
+  "keywords": [
+    "barrels",
+    "typescript",
+    "index",
+    "file"
+  ],
+  "author": "Nizami",
+  "license": "MIT",
+  "dependencies": {
+    "cac": "^6.7.14",
+    "glob": "^11.0.2",
+    "json5": "^2.2.3"
+  },
+  "devDependencies": {
+    "@ryoppippi/unplugin-typia": "^2.2.1",
+    "@types/node": "^22.15.17",
+    "ts-patch": "^3.3.0",
+    "typescript": "~5.8.3",
+    "typia": "^9.2.0",
+    "vite": "^6.3.5",
+    "vite-plugin-dts": "^4.5.3",
+    "vitest": "^3.1.3"
+  },
+  "bin": {
+    "barrelize": "./bin/cli.js"
+  },
+  "type": "module",
+  "sideEffects": false,
+  "files": [
+    "bin",
+    "lib"
+  ],
+  "exports": {
+    ".": {
+      "types": "./lib/src/index.d.ts",
+      "import": "./lib/index.js"
+    }
+  }
+}
