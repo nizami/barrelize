@@ -20,7 +20,7 @@
   "author": "Nizami",
   "license": "MIT",
   "devDependencies": {
-    "@ryoppippi/unplugin-typia": "^2.2.1",
+    "@ryoppippi/unplugin-typia": "^2.5.0",
     "@types/node": "^22.15.17",
     "cac": "^6.7.14",
     "glob": "^11.0.2",
