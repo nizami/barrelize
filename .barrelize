@@ -1,0 +1,11 @@
+{
+  "directories": [
+    {
+      "path": "src",
+      "include": ["**/*.ts"],
+      "exclude": ["**/*.test.ts"],
+      "order": ["cli", "cli/commands"],
+      "indexFilePath": "index.ts"
+    }
+  ]
+}
