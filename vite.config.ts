@@ -18,7 +18,7 @@ export default defineConfig({
     outDir: resolve(WORKSPACE_ROOT, 'lib'),
     emptyOutDir: true,
     minify: false,
-    sourcemap: true,
+    sourcemap: false,
     lib: {
       name: 'barrelize',
       formats: ['es'],
