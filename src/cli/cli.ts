@@ -5,7 +5,7 @@ import {name, version} from '../../package.json';
 export function cliInit(): void {
   const cli = cac(name);
 
-  cli.command('[config path]', `Generate 'index.ts' files for all directories`).action(async (config) => {
+  cli.command('[config path]', `Generate barrel files`).action(async (config) => {
     await runGenerateCommand({configPath: config || '.barrelize'});
   });
 

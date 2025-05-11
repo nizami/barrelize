@@ -17,7 +17,7 @@
       "type": "boolean",
       "default": true
     },
-    "directories": {
+    "barrels": {
       "type": "array",
       "items": {
         "type": "object",
@@ -95,6 +95,6 @@
     }
   },
   "required": [
-    "directories"
+    "barrels"
   ]
 }

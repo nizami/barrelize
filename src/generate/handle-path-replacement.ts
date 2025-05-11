@@ -1,6 +1,6 @@
-import {DEFAULT_CONFIG, DirectoryConfig, logError, logWarning} from '#lib';
+import {BarrelConfig, DEFAULT_CONFIG, logError, logWarning} from '#lib';
 
-export function handlePathReplacement(config: DirectoryConfig, files: string[]): string[] {
+export function handlePathReplacement(config: BarrelConfig, files: string[]): string[] {
   const replaces = config.replace ?? DEFAULT_CONFIG.replace;
 
   for (let i = 0; i < replaces.length; i++) {

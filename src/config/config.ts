@@ -1,6 +1,6 @@
 import {createValidateEquals} from 'typia';
 
-export type DirectoryConfig = {
+export type BarrelConfig = {
   path?: string;
   include?: string[];
   exclude?: string[];
@@ -17,10 +17,10 @@ export type Config = {
   singleQuote?: boolean;
   semi?: boolean;
   insertFinalNewline?: boolean;
-  directories: DirectoryConfig[];
+  barrels: BarrelConfig[];
 };
 
-export const DEFAULT_CONFIG: Required<DirectoryConfig> = {
+export const DEFAULT_CONFIG: Required<BarrelConfig> = {
   path: '',
   include: ['**/*.ts'],
   exclude: [],

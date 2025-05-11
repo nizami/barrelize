@@ -8,7 +8,6 @@ export * from './log/log-validation-error';
 export * from './config/config';
 export * from './config/parse-config';
 export * from './generate/glob-paths';
-export * from './config/output-config';
 export * from './generate/generate-barrel';
 export * from './generate/generate-barrels';
 export * from './generate/handle-path-order';

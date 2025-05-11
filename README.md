@@ -80,8 +80,8 @@ Create a `.barrelize` file in your project root. The configuration file uses JSO
   "singleQuote": true, // Use single quotes for exports (default: true)
   "semi": true, // Add semicolons after exports (default: true)
   "insertFinalNewline": true, // Add newline at end of file (default: true)
-  // Configure multiple directories to generate barrels for
-  "directories": [
+  // Configure multiple barrels to generate barrels for
+  "barrels": [
     {
       // Root directory to start from (default: "")
       "path": "src",

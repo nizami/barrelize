@@ -1,6 +1,6 @@
-import {DEFAULT_CONFIG, DirectoryConfig} from '#lib';
+import {BarrelConfig, DEFAULT_CONFIG} from '#lib';
 
-export function handlePathOrder(config: DirectoryConfig, paths: string[]): string[] {
+export function handlePathOrder(config: BarrelConfig, paths: string[]): string[] {
   paths = paths.sort((a, b) => a.localeCompare(b));
   const orders = config.order ?? DEFAULT_CONFIG.order;
 

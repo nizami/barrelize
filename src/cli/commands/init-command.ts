@@ -5,7 +5,7 @@ import {dirname, resolve} from 'node:path';
 
 const configTemplate: Config = {
   $schema: 'node_modules/barrelize/schema.json',
-  directories: [
+  barrels: [
     {
       path: 'src',
       include: ['**/*.ts'],
