@@ -9,7 +9,7 @@ import {
   TerminalColor,
 } from '#lib';
 import {existsSync} from 'node:fs';
-import {writeFile} from 'node:fs/promises';
+import {readFile, writeFile} from 'node:fs/promises';
 import {dirname, join, resolve} from 'node:path';
 
 export async function generateBarrels(rootPath: string, configPath: string, config: Config): Promise<void> {
@@ -36,14 +36,24 @@ export async function generateBarrels(rootPath: string, configPath: string, conf
 
     const formatExportLine = (path: string) => `export * from ${quote}./${path}${quote}${semiIfNeeded}`;
     const content = paths.map(formatExportLine).join('\n') + newLineIfNeeded;
+    const exportedText = `${paths.length} file${plural(paths)} exported`;
 
     if (existsSync(indexFileAbsolutePath)) {
-      const oldPaths = await indexFileExportedPaths(indexFileAbsolutePath);
+      const oldContent = (await readFile(indexFileAbsolutePath)).toString();
+      const oldPaths = await indexFileExportedPaths(oldContent);
+
+      if (content === oldContent) {
+        console.log(
+          colorize('IGNORE', TerminalColor.GREEN),
+          colorize(indexFileRelativePath, TerminalColor.CYAN),
+          colorize(exportedText, TerminalColor.GRAY),
+        );
+
+        return;
+      }
 
       await writeFile(indexFileAbsolutePath, content);
       const {insertions, deletions} = pathsDifferences(oldPaths, paths);
-
-      const exportedText = `${paths.length} file${plural(paths)} exported`;
 
       const insertionsText =
         insertions.length > 0 ? `, ${insertions.length} insertion${plural(insertions)}` : '';
@@ -57,15 +67,17 @@ export async function generateBarrels(rootPath: string, configPath: string, conf
       );
 
       printDifferences(insertions, deletions);
-    } else {
-      await writeFile(indexFileAbsolutePath, content);
 
-      console.log(
-        colorize('CREATE', TerminalColor.GREEN),
-        colorize(indexFileRelativePath, TerminalColor.CYAN),
-        colorize(`exports ${paths.length} file${paths.length > 1 ? 's' : ''}`, TerminalColor.GRAY),
-      );
+      return;
     }
+
+    await writeFile(indexFileAbsolutePath, content);
+
+    console.log(
+      colorize('CREATE', TerminalColor.GREEN),
+      colorize(indexFileRelativePath, TerminalColor.CYAN),
+      colorize(exportedText, TerminalColor.GRAY),
+    );
   }
 }
 
