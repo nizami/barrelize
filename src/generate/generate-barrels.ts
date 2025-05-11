@@ -1,10 +1,10 @@
 import {colorize, Config, DEFAULT_CONFIG, logError, logWarning, TerminalColor} from '#lib';
 import {glob} from 'glob';
 import {existsSync} from 'node:fs';
-import {writeFile} from 'node:fs/promises';
+import {readFile, writeFile} from 'node:fs/promises';
 import {dirname, join, resolve} from 'node:path';
 
-export async function generateBarrels(rootPath: string, config: Config): Promise<void> {
+export async function generateBarrels(rootPath: string, configPath: string, config: Config): Promise<void> {
   for (const directoryConfig of config.directories) {
     const indexFileBasePath = directoryConfig.indexFilePath ?? DEFAULT_CONFIG.indexFilePath;
     const indexFileRelativePath = join(directoryConfig.path ?? DEFAULT_CONFIG.path, indexFileBasePath);
@@ -13,20 +13,64 @@ export async function generateBarrels(rootPath: string, config: Config): Promise
 
     if (!existsSync(indexDirectory)) {
       console.error(logWarning(`Index directory '${indexDirectory}' does not exist - skipping`));
-      console.error(logWarning(`  Please verify the directory path in your configuration`));
+      console.error(logWarning(`  Please verify the directory path in your '${configPath}' configuration`));
 
       continue;
     }
 
     const files = await generateBarrel(rootPath, directoryConfig);
-    const content = files.map((x) => `export * from './${x}';`).join('\n');
+    const quote = directoryConfig.singleQuote ?? config.singleQuote ?? DEFAULT_CONFIG.singleQuote ? "'" : '"';
+    const semiIfNeeded = directoryConfig.semi ?? config.semi ?? DEFAULT_CONFIG.semi ? ';' : '';
+    const newLineIfNeeded =
+      directoryConfig.insertFinalNewline ?? config.insertFinalNewline ?? DEFAULT_CONFIG.insertFinalNewline
+        ? '\n'
+        : '';
 
-    await writeFile(indexFileAbsolutePath, content);
+    const formatExportLine = (path: string) => `export * from ${quote}./${path}${quote}${semiIfNeeded}`;
+    const content = files.map(formatExportLine).join('\n') + newLineIfNeeded;
 
-    console.log(
-      colorize(indexFileRelativePath, TerminalColor.CYAN),
-      colorize(`exports ${files.length} file${files.length > 1 ? 's' : ''}`, TerminalColor.GRAY),
-    );
+    if (existsSync(indexFileAbsolutePath)) {
+      const oldPaths = await getIndexExportedPaths(indexFileAbsolutePath);
+
+      await writeFile(indexFileAbsolutePath, content);
+
+      console.log(
+        colorize('UPDATE', TerminalColor.GREEN),
+        colorize(indexFileRelativePath, TerminalColor.CYAN),
+        colorize(`exports ${files.length} file${files.length > 1 ? 's' : ''}`, TerminalColor.GRAY),
+      );
+
+      printDifferences(oldPaths, files);
+    } else {
+      await writeFile(indexFileAbsolutePath, content);
+
+      console.log(
+        colorize('CREATE', TerminalColor.GREEN),
+        colorize(indexFileRelativePath, TerminalColor.CYAN),
+        colorize(`exports ${files.length} file${files.length > 1 ? 's' : ''}`, TerminalColor.GRAY),
+      );
+    }
+  }
+}
+
+async function getIndexExportedPaths(indexFilePath: string): Promise<string[]> {
+  const indexFileContent = await readFile(indexFilePath);
+  const matches = indexFileContent.toString().match(/'.+'/g);
+
+  return matches?.map((x) => x) ?? [];
+}
+
+function printDifferences(oldPaths: string[], newPaths: string[]): void {
+  for (const path of oldPaths) {
+    if (!newPaths.includes(path)) {
+      console.log(colorize(`  - ${path}`, TerminalColor.RED));
+    }
+  }
+
+  for (const path of newPaths) {
+    if (!oldPaths.includes(path)) {
+      console.log(colorize(`  + ${path}`, TerminalColor.GREEN));
+    }
   }
 }
 
