@@ -5,6 +5,18 @@
     "$schema": {
       "type": "string"
     },
+    "singleQuote": {
+      "type": "boolean",
+      "default": true
+    },
+    "semi": {
+      "type": "boolean",
+      "default": true
+    },
+    "insertFinalNewline": {
+      "type": "boolean",
+      "default": true
+    },
     "directories": {
       "type": "array",
       "items": {
@@ -64,6 +76,18 @@
                 "replacement": ""
               }
             ]
+          },
+          "singleQuote": {
+            "type": "boolean",
+            "default": true
+          },
+          "semi": {
+            "type": "boolean",
+            "default": true
+          },
+          "insertFinalNewline": {
+            "type": "boolean",
+            "default": true
           }
         },
         "required": []
