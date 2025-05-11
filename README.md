@@ -7,6 +7,8 @@ Barrelize simplifies module exports by creating clean, centralized `index.js` or
 [![NPM Version](https://img.shields.io/npm/v/barrelize)](https://www.npmjs.com/package/barrelize)
 [![GitHub License](https://img.shields.io/github/license/nizami/barrelize)](https://opensource.org/licenses/MIT)
 
+![Barrelize in action](image.png)
+
 ## Features
 
 - **Automatic Barrel Generation**: Scans directories and creates index files with exports for all modules.
@@ -54,11 +56,17 @@ npx barrelize init barrelize.json # Creates config at specified path
 
 ### `barrelize [config path]`
 
-Generates barrel (index) files based on your configuration.
+Generates barrel (index) files based on your configuration. The tool will:
+
+- Create or update index files in specified directories
+- Export all matching files based on include/exclude patterns
+- Order exports according to your configuration
+- Apply path replacements
+- Format exports according to your style preferences
 
 ```bash
-npx barrelize                   # Uses default .barrelize config
-npx barrelize -c barrelize.json # Uses custom config file
+npx barrelize                # Uses default .barrelize config
+npx barrelize custom.json    # Uses specified config file
 ```
 
 ## Configuration
@@ -67,26 +75,35 @@ Create a `.barrelize` file in your project root. The configuration file uses JSO
 
 ```jsonc
 {
+  "$schema": "node_modules/barrelize/schema.json",
+  // Global settings (can be overridden per directory)
+  "singleQuote": true, // Use single quotes for exports (default: true)
+  "semi": true, // Add semicolons after exports (default: true)
+  "insertFinalNewline": true, // Add newline at end of file (default: true)
   // Configure multiple directories to generate barrels for
   "directories": [
     {
-      // Root directory to start from
+      // Root directory to start from (default: "")
       "path": "src",
-      // Files to include in the barrel
+      // Files to include in the barrel (default: ["**/*.ts"])
       "include": ["**/*.ts", "**/*.tsx"],
-      // Files to exclude from the barrel
+      // Files to exclude from the barrel (default: [])
       "exclude": ["**/*.test.ts", "**/*.spec.ts"],
-      // Optional ordering of exports
+      // Optional ordering of exports (default: [])
       "order": ["types", "constants", "utils"],
-      // Whether to keep file extensions in exports
-      "keepFileExtension": true,
+      // Name of the index file (default: "index.ts")
+      "indexFilePath": "index.ts",
       // Optional string replacements in export paths
       "replace": [
         {
           "find": ".ts$",
           "replacement": ""
         }
-      ]
+      ],
+      // Override global settings per directory if needed
+      "singleQuote": true,
+      "semi": true,
+      "insertFinalNewline": true
     }
   ]
 }
