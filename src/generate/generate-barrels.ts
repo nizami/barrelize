@@ -49,7 +49,7 @@ export async function generateBarrels(rootPath: string, configPath: string, conf
           colorize(exportedText, TerminalColor.GRAY),
         );
 
-        return;
+        continue;
       }
 
       await writeFile(indexFileAbsolutePath, content);
@@ -68,7 +68,7 @@ export async function generateBarrels(rootPath: string, configPath: string, conf
 
       printDifferences(insertions, deletions);
 
-      return;
+      continue;
     }
 
     await writeFile(indexFileAbsolutePath, content);
