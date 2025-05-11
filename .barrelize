@@ -2,11 +2,11 @@
   "$schema": "schema.json",
   "barrels": [
     {
+      "name": "index.ts",
       "path": "src",
       "include": ["**/*.ts"],
       "exclude": ["**/*.test.ts", "schema/**"],
-      "order": ["cli", "log"],
-      "indexFilePath": "index.ts"
+      "order": ["cli", "log"]
     }
   ]
 }

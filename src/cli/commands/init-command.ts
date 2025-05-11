@@ -7,10 +7,10 @@ const configTemplate: Config = {
   $schema: 'node_modules/barrelize/schema.json',
   barrels: [
     {
+      name: 'index.ts',
       path: 'src',
       include: ['**/*.ts'],
       exclude: ['**/*.test.ts'],
-      indexFilePath: 'index.ts',
     },
   ],
 };

@@ -1,11 +1,11 @@
 import {createValidateEquals} from 'typia';
 
 export type BarrelConfig = {
+  name?: string;
   path?: string;
   include?: string[];
   exclude?: string[];
   order?: string[];
-  indexFilePath?: string;
   replace?: {find: string; replacement: string}[];
   singleQuote?: boolean;
   semi?: boolean;
@@ -25,7 +25,7 @@ export const DEFAULT_CONFIG: Required<BarrelConfig> = {
   include: ['**/*.ts'],
   exclude: [],
   order: [],
-  indexFilePath: 'index.ts',
+  name: 'index.ts',
   replace: [{find: '\\.ts$', replacement: ''}],
   singleQuote: true,
   semi: true,

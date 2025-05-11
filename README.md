@@ -83,6 +83,8 @@ Create a `.barrelize` file in your project root. The configuration file uses JSO
   // Configure multiple barrels to generate barrels for
   "barrels": [
     {
+      // Name of the index file (default: "index.ts")
+      "name": "index.ts",
       // Root directory to start from (default: "")
       "path": "src",
       // Files to include in the barrel (default: ["**/*.ts"])
@@ -91,8 +93,6 @@ Create a `.barrelize` file in your project root. The configuration file uses JSO
       "exclude": ["**/*.test.ts", "**/*.spec.ts"],
       // Optional ordering of exports (default: [])
       "order": ["types", "constants", "utils"],
-      // Name of the index file (default: "index.ts")
-      "indexFilePath": "index.ts",
       // Optional string replacements in export paths
       "replace": [
         {

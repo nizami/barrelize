@@ -14,7 +14,7 @@ import {dirname, join, resolve} from 'node:path';
 
 export async function generateBarrels(rootPath: string, configPath: string, config: Config): Promise<void> {
   for (const barrel of config.barrels) {
-    const indexFileBasePath = barrel.indexFilePath ?? DEFAULT_CONFIG.indexFilePath;
+    const indexFileBasePath = barrel.name ?? DEFAULT_CONFIG.name;
     const indexFileRelativePath = join(barrel.path ?? DEFAULT_CONFIG.path, indexFileBasePath);
     const indexFileAbsolutePath = resolve(rootPath, indexFileRelativePath);
     const indexDirectory = dirname(indexFileAbsolutePath);
@@ -30,9 +30,7 @@ export async function generateBarrels(rootPath: string, configPath: string, conf
     const quote = barrel.singleQuote ?? config.singleQuote ?? DEFAULT_CONFIG.singleQuote ? "'" : '"';
     const semiIfNeeded = barrel.semi ?? config.semi ?? DEFAULT_CONFIG.semi ? ';' : '';
     const newLineIfNeeded =
-      barrel.insertFinalNewline ?? config.insertFinalNewline ?? DEFAULT_CONFIG.insertFinalNewline
-        ? '\n'
-        : '';
+      barrel.insertFinalNewline ?? config.insertFinalNewline ?? DEFAULT_CONFIG.insertFinalNewline ? '\n' : '';
 
     const formatExportLine = (path: string) => `export * from ${quote}./${path}${quote}${semiIfNeeded}`;
     const content = paths.map(formatExportLine).join('\n') + newLineIfNeeded;

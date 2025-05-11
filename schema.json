@@ -22,6 +22,10 @@
       "items": {
         "type": "object",
         "properties": {
+          "name": {
+            "type": "string",
+            "default": "index.ts"
+          },
           "path": {
             "type": "string",
             "default": ""
@@ -48,10 +52,6 @@
               "type": "string"
             },
             "default": []
-          },
-          "indexFilePath": {
-            "type": "string",
-            "default": "index.ts"
           },
           "replace": {
             "type": "array",
