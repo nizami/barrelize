@@ -42,7 +42,7 @@ export async function generateBarrels(rootPath: string, configPath: string, conf
 
       if (content === oldContent) {
         console.log(
-          colorize('IGNORE', TerminalColor.GREEN),
+          colorize('IGNORE', TerminalColor.GRAY),
           colorize(indexFileRelativePath, TerminalColor.CYAN),
           colorize(exportedText, TerminalColor.GRAY),
         );
@@ -59,7 +59,7 @@ export async function generateBarrels(rootPath: string, configPath: string, conf
       const deletionsText = deletions.length > 0 ? `, ${deletions.length} deletion${plural(deletions)}` : '';
 
       console.log(
-        colorize('UPDATE', TerminalColor.GREEN),
+        colorize('UPDATE', TerminalColor.GRAY),
         colorize(indexFileRelativePath, TerminalColor.CYAN),
         colorize(`${exportedText}${insertionsText}${deletionsText}`, TerminalColor.GRAY),
       );
@@ -72,7 +72,7 @@ export async function generateBarrels(rootPath: string, configPath: string, conf
     await writeFile(indexFileAbsolutePath, content);
 
     console.log(
-      colorize('CREATE', TerminalColor.GREEN),
+      colorize('CREATE', TerminalColor.GRAY),
       colorize(indexFileRelativePath, TerminalColor.CYAN),
       colorize(exportedText, TerminalColor.GRAY),
     );
