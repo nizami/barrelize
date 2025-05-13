@@ -52,15 +52,11 @@ async function fillExports(
 
   for (const pathInfo of exportPaths) {
     const resolvedPath = resolve(rootDir, pathInfo.originalPath);
-
-    let allExportMembers = await getExportedMembers(resolvedPath);
-
-    if (!allExportMembers.length) {
-      continue;
-    }
+    const allExportMembers = await getExportedMembers(resolvedPath);
 
     const exportMemberList = await filterExportMembers(allExportMembers, includeRegexes, excludeRegexes);
     const exportMemberMap = getExportMemberMap(allExportMembers, mapRegexes, skipMapMembersIfNotExists);
+
     const asteriskMapItem = exportMemberMap.get('*');
 
     if (asteriskMapItem) {

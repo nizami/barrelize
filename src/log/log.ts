@@ -11,3 +11,9 @@ export function logWarning(message: string): void {
 export function logInfo(message: string): void {
   console.log(colorize(message, TerminalColor.BLUE));
 }
+
+export function logDebug(message: string): void {
+  if (process.argv.includes('--verbose')) {
+    console.log(colorize(message, TerminalColor.MAGENTA));
+  }
+}

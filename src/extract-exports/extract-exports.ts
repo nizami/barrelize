@@ -1,4 +1,4 @@
-import {ExtractExportsOptions, logWarning} from '#lib';
+import {ExtractExportsOptions, logDebug} from '#lib';
 import {parse, ParseResult} from '@babel/parser';
 import {existsSync} from 'node:fs';
 import {readFile} from 'node:fs/promises';
@@ -11,7 +11,7 @@ export type ExportInfo = {
 
 export async function extractExports(sourcePath: string): Promise<ExportInfo[]> {
   if (!existsSync(sourcePath)) {
-    logWarning(`Source path '${sourcePath}' does not exist`);
+    logDebug(`Source path '${sourcePath}' does not exist`);
 
     return [];
   }
@@ -33,7 +33,9 @@ export async function extractExportsFromFile(
 
     return extractExportsFromAst(ast, options);
   } catch (error) {
-    console.error(`Failed to process file '${sourcePath}':`, error);
+    if (error instanceof Error) {
+      logDebug(`Failed to process file '${sourcePath}': ${error.message}`);
+    }
     return [];
   }
 }
@@ -69,7 +71,7 @@ async function extractExportsFromAst(ast: ParseResult, options: ExtractExportsOp
         const normalizedPath = normalizeSourcePath(node.source.value, options);
 
         if (!normalizedPath) {
-          logWarning(`Exported module path '${normalizedPath}' does not exist`);
+          logDebug(`Exported module path '${normalizedPath}' does not exist`);
         } else {
           const innerExports = await extractExportsFromFile(normalizedPath, options);
           exports.push(...innerExports);
