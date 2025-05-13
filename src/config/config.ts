@@ -126,6 +126,11 @@ export type ExportsConfig = {
       [key: string]: string;
     };
     /**
+     * Whether to skip mapping members if they don't export in the source file
+     * @default true
+     */
+    skipMapMembersIfNotExists?: boolean;
+    /**
      * Use asterisk (*) export when all members from the file are exported
      * @default true
      */

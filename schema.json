@@ -189,6 +189,12 @@
               "*": "lib"
             }
           },
+          "skipMapMembersIfNotExists": {
+            "type": "boolean",
+            "description": "Whether to skip mapping members if they don't export in the source file",
+            "markdownDescription": "Whether to skip mapping members if they don't export in the source file",
+            "default": true
+          },
           "asteriskIfAllExported": {
             "type": "boolean",
             "description": "Use asterisk (*) export when all members from the file are exported",

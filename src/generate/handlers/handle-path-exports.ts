@@ -11,6 +11,12 @@ import {
 import {glob} from 'glob';
 import {resolve} from 'node:path';
 
+export type MapReplacement = {
+  exportKind?: ExportInfo['exportKind'];
+  oldName: string;
+  newName: string;
+};
+
 export async function handlePathExports(
   rootDir: string,
   barrelConfig: BarrelConfig,
@@ -42,6 +48,7 @@ async function fillExports(
 
   const asteriskIfAllExported = config.asteriskIfAllExported ?? true;
   const typePrefixIfPossible = config.typePrefixIfPossible ?? true;
+  const skipMapMembersIfNotExists = config.skipMapMembersIfNotExists ?? true;
 
   for (const pathInfo of exportPaths) {
     const resolvedPath = resolve(rootDir, pathInfo.originalPath);
@@ -53,9 +60,19 @@ async function fillExports(
     }
 
     const exportMemberList = await filterExportMembers(allExportMembers, includeRegexes, excludeRegexes);
-    const exportMemberMap = getExportMemberMap(mapRegexes, allExportMembers);
+    const exportMemberMap = getExportMemberMap(allExportMembers, mapRegexes, skipMapMembersIfNotExists);
+    const asteriskMapItem = exportMemberMap.get('*');
 
-    if (exportMemberMap.has('*')) {
+    if (asteriskMapItem) {
+      pathInfo.exports = [
+        formatExportMember(
+          typePrefixIfPossible,
+          asteriskMapItem.exportKind,
+          asteriskMapItem.oldName,
+          asteriskMapItem.newName,
+        ),
+      ];
+
       continue;
     }
 
@@ -69,33 +86,41 @@ async function fillExports(
 
     pathInfo.exports = [];
 
-    for (const {exportInfo, newName} of exportMemberMap.values()) {
-      pathInfo.exports.push(formatExportMember(typePrefixIfPossible, exportInfo, newName));
+    for (const {exportKind, oldName, newName} of exportMemberMap.values()) {
+      pathInfo.exports.push(formatExportMember(typePrefixIfPossible, exportKind, oldName, newName));
     }
 
     for (const exportInfo of exportMemberList) {
       if (!exportMemberMap.has(exportInfo.name)) {
-        pathInfo.exports.push(formatExportMember(typePrefixIfPossible, exportInfo));
+        pathInfo.exports.push(
+          formatExportMember(typePrefixIfPossible, exportInfo.exportKind, exportInfo.name),
+        );
       }
     }
   }
 }
 
-function formatExportMember(typePrefixIfPossible: boolean, exportInfo: ExportInfo, newName?: string): string {
-  const typeIfNeeded = typePrefixIfPossible && exportInfo.exportKind === 'type' ? 'type ' : '';
+function formatExportMember(
+  typePrefixIfPossible: boolean,
+  exportKind: ExportInfo['exportKind'],
+  name: string,
+  newName?: string,
+): string {
+  const typeIfNeeded = typePrefixIfPossible && exportKind === 'type' ? 'type ' : '';
 
   if (newName) {
-    return `${typeIfNeeded}${exportInfo.name} as ${newName}`;
+    return `${typeIfNeeded}${name} as ${newName}`;
   } else {
-    return `${typeIfNeeded}${exportInfo.name}`;
+    return `${typeIfNeeded}${name}`;
   }
 }
 
 function getExportMemberMap(
-  mapRegexes: [string | RegExp, string][] | null,
   exportMembers: ExportInfo[],
-): Map<string, {exportInfo: ExportInfo; newName: string}> {
-  const exportMemberMap = new Map<string, {exportInfo: ExportInfo; newName: string}>();
+  mapRegexes: [string | RegExp, string][] | null,
+  skipMapMembersIfNotExists: boolean,
+): Map<string, MapReplacement> {
+  const exportMemberMap = new Map<string, MapReplacement>();
 
   if (!mapRegexes?.length) {
     return exportMemberMap;
@@ -103,28 +128,40 @@ function getExportMemberMap(
 
   for (const [find, replacement] of mapRegexes) {
     if (typeof find === 'string') {
+      if (!skipMapMembersIfNotExists || find === '*') {
+        exportMemberMap.set(find, {oldName: find, newName: replacement});
+
+        continue;
+      }
+
       if (find !== replacement) {
         const exportInfo = exportMembers.find((x) => x.name === find);
 
         if (exportInfo) {
-          exportMemberMap.set(find, {exportInfo, newName: replacement});
-
-          if (find === '*') {
-            return exportMemberMap;
-          }
+          exportMemberMap.set(find, {
+            exportKind: exportInfo.exportKind,
+            oldName: exportInfo.name,
+            newName: replacement,
+          });
         }
       }
-    } else {
-      exportMembers.forEach((exportInfo) => {
-        if (find.test(exportInfo.name)) {
-          const newName = exportInfo.name.replace(find, replacement);
 
-          if (exportInfo.name !== newName) {
-            exportMemberMap.set(exportInfo.name, {exportInfo, newName});
-          }
-        }
-      });
+      continue;
     }
+
+    exportMembers.forEach((exportInfo) => {
+      if (find.test(exportInfo.name)) {
+        const newName = exportInfo.name.replace(find, replacement);
+
+        if (exportInfo.name !== newName) {
+          exportMemberMap.set(exportInfo.name, {
+            exportKind: exportInfo.exportKind,
+            oldName: exportInfo.name,
+            newName,
+          });
+        }
+      }
+    });
   }
 
   return exportMemberMap;
