@@ -1,14 +1,15 @@
-import {BarrelConfig, DEFAULT_CONFIG} from '#lib';
+import {BarrelConfig, DEFAULT_CONFIG, ExportPathInfo} from '#lib';
 
-export function handlePathOrder(config: BarrelConfig, paths: string[]): string[] {
-  paths = paths.sort((a, b) => a.localeCompare(b));
+export async function handlePathOrder(config: BarrelConfig, paths: ExportPathInfo[]): Promise<void> {
   const orders = config.order ?? DEFAULT_CONFIG.order;
 
-  if (!orders.length) {
-    return paths;
+  if (orders.length) {
+    paths.sort((a, b) => pathCompare(config.order!, a.originalPath, b.originalPath));
+
+    return;
   }
 
-  return paths.sort((a, b) => pathCompare(config.order!, a, b));
+  paths.sort((a, b) => a.originalPath.localeCompare(b.originalPath));
 }
 
 function pathCompare(order: string[], a: string, b: string): number {
@@ -28,5 +29,5 @@ function pathCompare(order: string[], a: string, b: string): number {
     return pathPortionsA - pathPortionsB;
   }
 
-  return a.length - b.length;
+  return a.localeCompare(b);
 }
