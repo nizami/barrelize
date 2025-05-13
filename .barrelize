@@ -2,11 +2,15 @@
   "$schema": "schema.json",
   "barrels": [
     {
+      "root": "src",
       "name": "index.ts",
-      "path": "src",
       "include": ["**/*.ts"],
       "exclude": ["**/*.test.ts", "schema/**"],
-      "order": ["cli", "log"]
+      "order": ["cli", "log"],
+      "bracketSpacing": false,
+      "replace": {
+        "/\\.ts$/": ""
+      }
     }
   ]
 }
