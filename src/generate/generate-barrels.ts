@@ -2,7 +2,8 @@ import {
   colorize,
   Config,
   DEFAULT_CONFIG,
-  generateBarrel,
+  formatExportLine,
+  handlePaths,
   indexFileExportedPaths,
   logWarning,
   pathsDifferences,
@@ -12,11 +13,11 @@ import {existsSync} from 'node:fs';
 import {readFile, writeFile} from 'node:fs/promises';
 import {dirname, join, resolve} from 'node:path';
 
-export async function generateBarrels(rootPath: string, configPath: string, config: Config): Promise<void> {
-  for (const barrel of config.barrels) {
-    const indexFileBasePath = barrel.name ?? DEFAULT_CONFIG.name;
-    const indexFileRelativePath = join(barrel.path ?? DEFAULT_CONFIG.path, indexFileBasePath);
-    const indexFileAbsolutePath = resolve(rootPath, indexFileRelativePath);
+export async function generateBarrels(configDir: string, configPath: string, config: Config): Promise<void> {
+  for (const barrelConfig of config.barrels) {
+    const indexFileBasePath = barrelConfig.name ?? DEFAULT_CONFIG.name;
+    const indexFileRelativePath = join(barrelConfig.root ?? DEFAULT_CONFIG.root, indexFileBasePath);
+    const indexFileAbsolutePath = resolve(configDir, indexFileRelativePath);
     const indexDirectory = dirname(indexFileAbsolutePath);
 
     if (!existsSync(indexDirectory)) {
@@ -26,21 +27,21 @@ export async function generateBarrels(rootPath: string, configPath: string, conf
       continue;
     }
 
-    const paths = await generateBarrel(rootPath, barrel);
-    const quote = barrel.singleQuote ?? config.singleQuote ?? DEFAULT_CONFIG.singleQuote ? "'" : '"';
-    const semiIfNeeded = barrel.semi ?? config.semi ?? DEFAULT_CONFIG.semi ? ';' : '';
-    const newLineIfNeeded =
-      barrel.insertFinalNewline ?? config.insertFinalNewline ?? DEFAULT_CONFIG.insertFinalNewline ? '\n' : '';
+    const exportPaths = await handlePaths(configDir, barrelConfig);
 
-    const formatExportLine = (path: string) => `export * from ${quote}./${path}${quote}${semiIfNeeded}`;
-    const content = paths.map(formatExportLine).join('\n') + newLineIfNeeded;
-    const exportedText = `${paths.length} file${plural(paths)} exported`;
+    const newLineIfNeeded =
+      barrelConfig.insertFinalNewline ?? config.insertFinalNewline ?? DEFAULT_CONFIG.insertFinalNewline
+        ? '\n'
+        : '';
+
+    const newContent =
+      exportPaths.map((x) => formatExportLine(x, config, barrelConfig)).join('\n') + newLineIfNeeded;
+    const exportedText = `${exportPaths.length} file${plural(exportPaths)} exported`;
 
     if (existsSync(indexFileAbsolutePath)) {
       const oldContent = (await readFile(indexFileAbsolutePath)).toString();
-      const oldPaths = await indexFileExportedPaths(oldContent);
 
-      if (content === oldContent) {
+      if (newContent === oldContent) {
         console.log(
           colorize('IGNORE', TerminalColor.GRAY),
           colorize(indexFileRelativePath, TerminalColor.CYAN),
@@ -50,8 +51,13 @@ export async function generateBarrels(rootPath: string, configPath: string, conf
         continue;
       }
 
-      await writeFile(indexFileAbsolutePath, content);
-      const {insertions, deletions} = pathsDifferences(oldPaths, paths);
+      const oldPaths = await indexFileExportedPaths(oldContent);
+      await writeFile(indexFileAbsolutePath, newContent);
+
+      const {insertions, deletions} = pathsDifferences(
+        oldPaths,
+        exportPaths.map((x) => x.modifiedPath),
+      );
 
       const insertionsText =
         insertions.length > 0 ? `, ${insertions.length} insertion${plural(insertions)}` : '';
@@ -69,7 +75,7 @@ export async function generateBarrels(rootPath: string, configPath: string, conf
       continue;
     }
 
-    await writeFile(indexFileAbsolutePath, content);
+    await writeFile(indexFileAbsolutePath, newContent);
 
     console.log(
       colorize('CREATE', TerminalColor.GRAY),

@@ -1,100 +1,211 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema",
-  "type": "object",
-  "properties": {
-    "$schema": {
-      "type": "string"
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$ref": "#/definitions/Config",
+  "definitions": {
+    "Config": {
+      "type": "object",
+      "properties": {
+        "$schema": {
+          "type": "string",
+          "description": "Path to the JSON schema file that will be used for configuration validation",
+          "markdownDescription": "Path to the JSON schema file that will be used for configuration validation",
+          "default": "undefined"
+        },
+        "bracketSpacing": {
+          "type": "boolean",
+          "description": "Whether to add spaces between brackets in export statements",
+          "markdownDescription": "Whether to add spaces between brackets in export statements",
+          "default": true
+        },
+        "singleQuote": {
+          "type": "boolean",
+          "description": "Whether to use single quotes instead of double quotes for exports",
+          "markdownDescription": "Whether to use single quotes instead of double quotes for exports",
+          "default": true
+        },
+        "semi": {
+          "type": "boolean",
+          "description": "Whether to append semicolons to export statements",
+          "markdownDescription": "Whether to append semicolons to export statements",
+          "default": true
+        },
+        "insertFinalNewline": {
+          "type": "boolean",
+          "description": "Whether to append a newline character at the end of generated files",
+          "markdownDescription": "Whether to append a newline character at the end of generated files",
+          "default": true
+        },
+        "barrels": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/BarrelConfig"
+          },
+          "description": "List of barrel configurations",
+          "markdownDescription": "List of barrel configurations",
+          "default": [
+            {
+              "root": "src",
+              "name": "index.ts",
+              "include": [
+                "**/*.ts"
+              ],
+              "exclude": [
+                "**/*.test.ts"
+              ]
+            }
+          ]
+        }
+      },
+      "required": [
+        "barrels"
+      ],
+      "additionalProperties": false
     },
-    "singleQuote": {
-      "type": "boolean",
-      "default": true
+    "BarrelConfig": {
+      "type": "object",
+      "properties": {
+        "root": {
+          "type": "string",
+          "description": "Root directory to start from (support glob pattern)",
+          "markdownDescription": "Root directory to start from (support glob pattern)",
+          "default": ""
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the index file (e.g. index.ts or some/path/index.ts)",
+          "markdownDescription": "Name of the index file (e.g. index.ts or some/path/index.ts)",
+          "default": "index.ts"
+        },
+        "include": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Files to include in the barrel (supports glob patterns)",
+          "markdownDescription": "Files to include in the barrel (supports glob patterns)",
+          "default": [
+            "**/*.ts"
+          ]
+        },
+        "exclude": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Files to exclude from the barrel (supports glob patterns)",
+          "markdownDescription": "Files to exclude from the barrel (supports glob patterns)",
+          "default": []
+        },
+        "order": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Ordering of exports",
+          "markdownDescription": "Ordering of exports",
+          "default": []
+        },
+        "replace": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string",
+            "description": "String or regular expression pattern to find in export paths (e.g. \"\\\\.ts$\", \"my-custom-export-path.ts\")",
+            "markdownDescription": "String or regular expression pattern to find in export paths (e.g. \"\\\\.ts$\", \"my-custom-export-path.ts\")"
+          },
+          "description": "String or regular expression patterns to find and replace in export paths (e.g. {\"\\\\.ts$\": \"\", \"my-custom-export-path.ts\": \"my-path.ts\"})",
+          "markdownDescription": "String or regular expression patterns to find and replace in export paths (e.g. {\"\\\\.ts$\": \"\", \"my-custom-export-path.ts\": \"my-path.ts\"})",
+          "default": {
+            "/\\.ts$/": ""
+          }
+        },
+        "exports": {
+          "$ref": "#/definitions/ExportsConfig",
+          "description": "Configuration for exports in barrel files",
+          "markdownDescription": "Configuration for exports in barrel files",
+          "default": {
+            "**/*.ts": {}
+          }
+        },
+        "bracketSpacing": {
+          "type": "boolean",
+          "description": "Use spaces between brackets in exports",
+          "markdownDescription": "Use spaces between brackets in exports",
+          "default": true
+        },
+        "singleQuote": {
+          "type": "boolean",
+          "description": "Use single quotes for exports",
+          "markdownDescription": "Use single quotes for exports",
+          "default": true
+        },
+        "semi": {
+          "type": "boolean",
+          "description": "Add semicolons after exports",
+          "markdownDescription": "Add semicolons after exports",
+          "default": true
+        },
+        "insertFinalNewline": {
+          "type": "boolean",
+          "description": "Add newline at end of file",
+          "markdownDescription": "Add newline at end of file",
+          "default": true
+        }
+      },
+      "additionalProperties": false
     },
-    "semi": {
-      "type": "boolean",
-      "default": true
-    },
-    "insertFinalNewline": {
-      "type": "boolean",
-      "default": true
-    },
-    "barrels": {
-      "type": "array",
-      "items": {
+    "ExportsConfig": {
+      "type": "object",
+      "additionalProperties": {
         "type": "object",
         "properties": {
-          "name": {
-            "type": "string",
-            "default": "index.ts"
-          },
-          "path": {
-            "type": "string",
-            "default": ""
-          },
-          "include": {
+          "includeMembers": {
             "type": "array",
             "items": {
               "type": "string"
             },
-            "default": [
-              "**/*.ts"
-            ]
-          },
-          "exclude": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
+            "description": "String or regular expression pattern of members to include in exports",
+            "markdownDescription": "String or regular expression pattern of members to include in exports",
             "default": []
           },
-          "order": {
+          "excludeMembers": {
             "type": "array",
             "items": {
               "type": "string"
             },
+            "description": "String or regular expression pattern of members to exclude from exports",
+            "markdownDescription": "String or regular expression pattern of members to exclude from exports",
             "default": []
           },
-          "replace": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "find": {
-                  "type": "string"
-                },
-                "replacement": {
-                  "type": "string"
-                }
-              },
-              "required": [
-                "find",
-                "replacement"
-              ]
+          "map": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "description": "String or regular expression pattern to find in member name (e.g. \"/^.+Util$/\", \"default\", \"*\")",
+              "markdownDescription": "String or regular expression pattern to find in member name (e.g. \"/^.+Util$/\", \"default\", \"*\")"
             },
-            "default": [
-              {
-                "find": "\\.ts$",
-                "replacement": ""
-              }
-            ]
+            "description": "Map of member name patterns to export names using string or regular expressions (e.g. {\"/^.+Util$/\": \"util\"}, {\"default\": \"lib\", \"*\": \"services\"})",
+            "markdownDescription": "Map of member name patterns to export names using string or regular expressions (e.g. {\"/^.+Util$/\": \"util\"}, {\"default\": \"lib\", \"*\": \"services\"})",
+            "default": {
+              "*": "lib"
+            }
           },
-          "singleQuote": {
+          "asteriskIfAllExported": {
             "type": "boolean",
+            "description": "Use asterisk (*) export when all members from the file are exported",
+            "markdownDescription": "Use asterisk (*) export when all members from the file are exported",
             "default": true
           },
-          "semi": {
+          "typePrefixIfPossible": {
             "type": "boolean",
-            "default": true
-          },
-          "insertFinalNewline": {
-            "type": "boolean",
+            "description": "Add 'type' prefix for type-only exports when possible",
+            "markdownDescription": "Add 'type' prefix for type-only exports when possible",
             "default": true
           }
         },
-        "required": []
+        "additionalProperties": false,
+        "description": "Glob pattern exports file (e.g. \"**\\/*service.ts\")",
+        "markdownDescription": "Glob pattern exports file (e.g. \"**\\/*service.ts\")"
       }
     }
-  },
-  "required": [
-    "barrels"
-  ]
+  }
 }
