@@ -36,7 +36,7 @@ export async function runGenerateCommand(options: GenerateCommandOptions) {
     return;
   }
 
-  const rootPath = resolve(dirname(options.configPath));
+  const configDir = resolve(dirname(options.configPath));
 
-  await generateBarrels(rootPath, options.configPath, validatedConfig.data);
+  await generateBarrels(configDir, options.configPath, validatedConfig.data);
 }

@@ -1,19 +1,7 @@
-import {colorize, Config, logWarning, TerminalColor} from '#lib';
+import {colorize, INITIAL_CONFIG, logWarning, TerminalColor} from '#lib';
 import {existsSync} from 'node:fs';
 import {writeFile} from 'node:fs/promises';
 import {dirname, resolve} from 'node:path';
-
-const configTemplate: Config = {
-  $schema: 'node_modules/barrelize/schema.json',
-  barrels: [
-    {
-      name: 'index.ts',
-      path: 'src',
-      include: ['**/*.ts'],
-      exclude: ['**/*.test.ts'],
-    },
-  ],
-};
 
 export async function runInitCommand(baseConfigFilePath: string) {
   const configFilePath = resolve(process.cwd(), baseConfigFilePath);
@@ -32,7 +20,7 @@ export async function runInitCommand(baseConfigFilePath: string) {
     return;
   }
 
-  const configTemplateJson = JSON.stringify(configTemplate, null, 2);
+  const configTemplateJson = JSON.stringify(INITIAL_CONFIG, null, 2);
 
   await writeFile(configFilePath, configTemplateJson);
 
