@@ -109,9 +109,9 @@ Create a `.barrelize` file in your project root. The configuration file uses JSO
       // Export configuration for different file patterns
       "exports": {
         "**/*.ts": {
-          // Include specific members (default: [])
+          // Include specific members using string or regex patterns (default: [])
           "includeMembers": ["MyClass", "/^.*Service$/"],
-          // Exclude specific members (default: [])
+          // Exclude specific members using string or regex patterns (default: [])
           "excludeMembers": ["internal", "/^_.*$/"],
           // Map member patterns to export names
           "map": {
@@ -119,6 +119,8 @@ Create a `.barrelize` file in your project root. The configuration file uses JSO
             "default": "lib",
             "*": "services"
           },
+          // Skip mapping members if they don't exist in source (default: true)
+          "skipMapMembersIfNotExists": true,
           // Use * export when all members are exported (default: true)
           "asteriskIfAllExported": true,
           // Add 'type' prefix for type-only exports (default: true)
