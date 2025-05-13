@@ -22,7 +22,7 @@
   "license": "MIT",
   "devDependencies": {
     "@babel/parser": "^7.27.2",
-    "@ryoppippi/unplugin-typia": "^2.5.0",
+    "@ryoppippi/unplugin-typia": "^2.6.2",
     "@types/node": "^22.15.17",
     "cac": "^6.7.14",
     "glob": "^11.0.2",
