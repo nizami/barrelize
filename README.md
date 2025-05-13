@@ -16,6 +16,13 @@ Barrelize simplifies module exports by creating clean, centralized `index.js` or
 - **Customizable**: Configure file patterns, ignore specific files, or customize export styles (named, default, or both).
 - **Recursive**: Optionally generate barrels for nested directories.
 - **CLI & API**: Use via command line for quick setups or integrate programmatically in your build scripts.
+- **Smart Export Control**: Fine-grained control over what gets exported and how:
+  - Include/exclude specific members using string or regex patterns
+  - Map member names to custom export names
+  - Automatic type-only exports detection
+  - Support for asterisk (\*) exports when appropriate
+- **Flexible Path Handling**: Replace patterns in export paths using string or regular expressions
+- **Customizable Formatting**: Control bracket spacing, quotes, semicolons, and newlines
 
 ### Why Use Barrelize?
 
@@ -76,31 +83,50 @@ Create a `.barrelize` file in your project root. The configuration file uses JSO
 ```jsonc
 {
   "$schema": "node_modules/barrelize/schema.json",
-  // Global settings (can be overridden per directory)
+  // Global formatting settings
+  "bracketSpacing": true, // Add spaces between brackets in exports (default: true)
   "singleQuote": true, // Use single quotes for exports (default: true)
   "semi": true, // Add semicolons after exports (default: true)
   "insertFinalNewline": true, // Add newline at end of file (default: true)
-  // Configure multiple barrels to generate barrels for
+
+  // Configure multiple barrels
   "barrels": [
     {
+      // Root directory to start from (default: "")
+      "root": "src",
       // Name of the index file (default: "index.ts")
       "name": "index.ts",
-      // Root directory to start from (default: "")
-      "path": "src",
       // Files to include in the barrel (default: ["**/*.ts"])
-      "include": ["**/*.ts", "**/*.tsx"],
+      "include": ["**/*.ts"],
       // Files to exclude from the barrel (default: [])
-      "exclude": ["**/*.test.ts", "**/*.spec.ts"],
+      "exclude": ["**/*.test.ts"],
       // Optional ordering of exports (default: [])
       "order": ["types", "constants", "utils"],
-      // Optional string replacements in export paths
-      "replace": [
-        {
-          "find": ".ts$",
-          "replacement": ""
+      // String/regex patterns to find and replace in export paths
+      "replace": {
+        "/\\.ts$/": "" // Remove .ts extension from paths
+      },
+      // Export configuration for different file patterns
+      "exports": {
+        "**/*.ts": {
+          // Include specific members (default: [])
+          "includeMembers": ["MyClass", "/^.*Service$/"],
+          // Exclude specific members (default: [])
+          "excludeMembers": ["internal", "/^_.*$/"],
+          // Map member patterns to export names
+          "map": {
+            "/^.+Util$/": "util",
+            "default": "lib",
+            "*": "services"
+          },
+          // Use * export when all members are exported (default: true)
+          "asteriskIfAllExported": true,
+          // Add 'type' prefix for type-only exports (default: true)
+          "typePrefixIfPossible": true
         }
-      ],
-      // Override global settings per directory if needed
+      },
+      // Override global formatting settings per barrel
+      "bracketSpacing": true,
       "singleQuote": true,
       "semi": true,
       "insertFinalNewline": true
