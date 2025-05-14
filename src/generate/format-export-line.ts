@@ -5,16 +5,20 @@ export function formatExportLine(path: ExportPathInfo, config: Config, barrelCon
     barrelConfig.bracketSpacing ?? config.bracketSpacing ?? DEFAULT_CONFIG.bracketSpacing ? ' ' : '';
   const quote = barrelConfig.singleQuote ?? config.singleQuote ?? DEFAULT_CONFIG.singleQuote ? "'" : '"';
   const semiIfNeeded = barrelConfig.semi ?? config.semi ?? DEFAULT_CONFIG.semi ? ';' : '';
+  const fromPartText = `from ${quote}./${path.modifiedPath}${quote}${semiIfNeeded}`;
 
   if (!path.exports?.length) {
-    return `export * from ${quote}./${path.modifiedPath}${quote}${semiIfNeeded}`;
+    return `export * ${fromPartText}`;
   }
 
-  const members = path.exports.join(', ');
+  const asteriskMembers = path.exports
+    .filter((x) => x.startsWith('*'))
+    .map((x) => `export ${x} ${fromPartText}`)
+    .join('\n');
 
-  if (path.exports.length === 1 && path.exports[0].startsWith('*')) {
-    return `export ${members} from ${quote}./${path.modifiedPath}${quote}${semiIfNeeded}`;
-  }
+  const asteriskMembersText = asteriskMembers.length ? asteriskMembers + '\n' : '';
 
-  return `export {${bracketSpacingIfNeeded}${members}${bracketSpacingIfNeeded}} from ${quote}./${path.modifiedPath}${quote}${semiIfNeeded}`;
+  const members = path.exports.filter((x) => !x.startsWith('*')).join(', ');
+
+  return `${asteriskMembersText}export {${bracketSpacingIfNeeded}${members}${bracketSpacingIfNeeded}} ${fromPartText}`;
 }

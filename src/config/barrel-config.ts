@@ -1,5 +1,3 @@
-import {ExportsConfig} from '#lib';
-
 export type BarrelConfig = {
   /**
    * Root directory to start from (support glob pattern)
@@ -40,7 +38,13 @@ export type BarrelConfig = {
    * Configuration for exports in barrel files
    * @default {'**\/*.ts': {}}
    */
-  exports?: ExportsConfig;
+  exports?: {
+    /**
+     * Glob pattern exports file with string or regular expression patterns
+     * (e.g. "**\/*service.ts": ["* as lib", "/(.+)Config$/ as $1LibConfig", "util"])
+     */
+    [key: string]: string[];
+  };
   /**
    * Use spaces between brackets in exports
    * @default true

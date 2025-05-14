@@ -17,10 +17,10 @@ Barrelize simplifies module exports by creating clean, centralized `index.js` or
 - **Recursive**: Optionally generate barrels for nested directories.
 - **CLI & API**: Use via command line for quick setups or integrate programmatically in your build scripts.
 - **Smart Export Control**: Fine-grained control over what gets exported and how:
-  - Include/exclude specific members using string or regex patterns
-  - Map member names to custom export names
-  - Automatic type-only exports detection
-  - Support for asterisk (\*) exports when appropriate
+  - Export specific members, namespaces, or use regex patterns
+  - Support for custom export names and transformations
+  - Support for asterisk (\*) exports
+  - Flexible export path manipulation
 - **Flexible Path Handling**: Replace patterns in export paths using string or regular expressions
 - **Customizable Formatting**: Control bracket spacing, quotes, semicolons, and newlines
 
@@ -108,24 +108,12 @@ Create a `.barrelize` file in your project root. The configuration file uses JSO
       },
       // Export configuration for different file patterns
       "exports": {
-        "**/*.ts": {
-          // Include specific members using string or regex patterns (default: [])
-          "includeMembers": ["MyClass", "/^.*Service$/"],
-          // Exclude specific members using string or regex patterns (default: [])
-          "excludeMembers": ["internal", "/^_.*$/"],
-          // Map member patterns to export names
-          "map": {
-            "/^.+Util$/": "util",
-            "default": "lib",
-            "*": "services"
-          },
-          // Skip mapping members if they don't exist in source (default: true)
-          "skipMapMembersIfNotExists": true,
-          // Use * export when all members are exported (default: true)
-          "asteriskIfAllExported": true,
-          // Add 'type' prefix for type-only exports (default: true)
-          "typePrefixIfPossible": true
-        }
+        // Glob pattern exports file with string or regular expression patterns
+        "**/*.ts": [
+          "* as lib", // Export all as namespace
+          "/(.+)Config$/ as $1LibConfig", // Rename exports matching pattern
+          "util" // Export specific member
+        ]
       },
       // Override global formatting settings per barrel
       "bracketSpacing": true,

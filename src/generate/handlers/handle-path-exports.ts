@@ -1,21 +1,6 @@
-import {
-  BarrelConfig,
-  DEFAULT_CONFIG,
-  ExportInfo,
-  ExportPathInfo,
-  ExportsConfig,
-  extractExports,
-  rsTest,
-  tryParseRegex,
-} from '#lib';
+import {BarrelConfig, DEFAULT_CONFIG, ExportInfo, ExportPathInfo, extractExports, tryParseRegex} from '#lib';
 import {glob} from 'glob';
 import {resolve} from 'node:path';
-
-export type MapReplacement = {
-  exportKind?: ExportInfo['exportKind'];
-  oldName: string;
-  newName: string;
-};
 
 export async function handlePathExports(
   rootDir: string,
@@ -24,159 +9,78 @@ export async function handlePathExports(
 ): Promise<void> {
   const configExports = barrelConfig.exports ?? DEFAULT_CONFIG.exports;
 
-  for (const [globPattern, mapConfig] of Object.entries(configExports)) {
-    if (!mapConfig.map && mapConfig.asteriskIfAllExported) {
+  for (const [globPattern, exportMembers] of Object.entries(configExports)) {
+    if (!exportMembers.length) {
       continue;
     }
 
     const intersectionPaths = await getIntersectionPaths(rootDir, globPattern, exportPaths);
-    await fillExports(rootDir, intersectionPaths, mapConfig);
+    await fillExports(rootDir, intersectionPaths, exportMembers);
   }
 }
 
 async function fillExports(
   rootDir: string,
   exportPaths: ExportPathInfo[],
-  config: ExportsConfig[string],
+  exportMembers: string[],
 ): Promise<void> {
-  const includeRegexes = config.includeMembers?.map((x) => tryParseRegex(x) ?? x);
-  const excludeRegexes = config.excludeMembers?.map((x) => tryParseRegex(x) ?? x);
+  const parsedMembers =
+    exportMembers.map((x) => {
+      const [find, replacement] = x.split(/\s+as\s+/) as [string, string | undefined];
 
-  const mapRegexes = config.map
-    ? Object.entries(config.map).map<[RegExp | string, string]>(([k, v]) => [tryParseRegex(k) ?? k, v])
-    : null;
-
-  const asteriskIfAllExported = config.asteriskIfAllExported ?? true;
-  const typePrefixIfPossible = config.typePrefixIfPossible ?? true;
-  const skipMapMembersIfNotExists = config.skipMapMembersIfNotExists ?? true;
+      return {
+        member: tryParseRegex(find) ?? find,
+        toMember: replacement,
+      };
+    }) ?? [];
 
   for (const pathInfo of exportPaths) {
-    const resolvedPath = resolve(rootDir, pathInfo.originalPath);
-    const allExportMembers = await getExportedMembers(resolvedPath);
-
-    const exportMemberList = await filterExportMembers(allExportMembers, includeRegexes, excludeRegexes);
-    const exportMemberMap = getExportMemberMap(allExportMembers, mapRegexes, skipMapMembersIfNotExists);
-
-    const asteriskMapItem = exportMemberMap.get('*');
-
-    if (asteriskMapItem) {
-      pathInfo.exports = [
-        formatExportMember(
-          typePrefixIfPossible,
-          asteriskMapItem.exportKind,
-          asteriskMapItem.oldName,
-          asteriskMapItem.newName,
-        ),
-      ];
-
-      continue;
-    }
-
-    if (
-      asteriskIfAllExported &&
-      !exportMemberMap.size &&
-      exportMemberList.length === allExportMembers.length
-    ) {
-      continue;
-    }
-
     pathInfo.exports = [];
+    const resolvedPath = resolve(rootDir, pathInfo.originalPath);
+    const allExportInfos = await getExportedMembers(resolvedPath);
+    const map = new Map<string, ExportInfo>();
 
-    for (const {exportKind, oldName, newName} of exportMemberMap.values()) {
-      pathInfo.exports.push(formatExportMember(typePrefixIfPossible, exportKind, oldName, newName));
-    }
+    const setMap = (fromMember: string, toMember: string, exportKind?: ExportInfo['exportKind']) => {
+      fromMember = fromMember.trim();
+      toMember = toMember.trim();
 
-    for (const exportInfo of exportMemberList) {
-      if (!exportMemberMap.has(exportInfo.name)) {
-        pathInfo.exports.push(
-          formatExportMember(typePrefixIfPossible, exportInfo.exportKind, exportInfo.name),
-        );
+      if (map.has(toMember) && fromMember === toMember) {
+        return;
       }
-    }
-  }
-}
 
-function formatExportMember(
-  typePrefixIfPossible: boolean,
-  exportKind: ExportInfo['exportKind'],
-  name: string,
-  newName?: string,
-): string {
-  const typeIfNeeded = typePrefixIfPossible && exportKind === 'type' ? 'type ' : '';
+      map.set(toMember, {name: fromMember, exportKind});
+    };
 
-  if (newName) {
-    return `${typeIfNeeded}${name} as ${newName}`;
-  } else {
-    return `${typeIfNeeded}${name}`;
-  }
-}
+    for (const {member, toMember} of parsedMembers) {
+      if (typeof member === 'string') {
+        const exportInfo = allExportInfos.find((x) => x.name === member);
 
-function getExportMemberMap(
-  exportMembers: ExportInfo[],
-  mapRegexes: [string | RegExp, string][] | null,
-  skipMapMembersIfNotExists: boolean,
-): Map<string, MapReplacement> {
-  const exportMemberMap = new Map<string, MapReplacement>();
-
-  if (!mapRegexes?.length) {
-    return exportMemberMap;
-  }
-
-  for (const [find, replacement] of mapRegexes) {
-    if (typeof find === 'string') {
-      if (!skipMapMembersIfNotExists || find === '*') {
-        exportMemberMap.set(find, {oldName: find, newName: replacement});
+        setMap(member, toMember ?? member, exportInfo?.exportKind);
 
         continue;
       }
 
-      if (find !== replacement) {
-        const exportInfo = exportMembers.find((x) => x.name === find);
+      const foundExportInfos = allExportInfos.filter((x) => member.test(x.name));
 
-        if (exportInfo) {
-          exportMemberMap.set(find, {
-            exportKind: exportInfo.exportKind,
-            oldName: exportInfo.name,
-            newName: replacement,
-          });
-        }
+      for (const exportInfo of foundExportInfos) {
+        setMap(exportInfo.name, exportInfo.name.replace(member, toMember ?? exportInfo.name));
       }
-
-      continue;
     }
 
-    exportMembers.forEach((exportInfo) => {
-      if (find.test(exportInfo.name)) {
-        const newName = exportInfo.name.replace(find, replacement);
-
-        if (exportInfo.name !== newName) {
-          exportMemberMap.set(exportInfo.name, {
-            exportKind: exportInfo.exportKind,
-            oldName: exportInfo.name,
-            newName,
-          });
-        }
-      }
-    });
+    for (const [newName, info] of map) {
+      pathInfo.exports.push(formatExportMember(info.exportKind, info.name, newName));
+    }
   }
-
-  return exportMemberMap;
 }
 
-async function filterExportMembers(
-  exportMembers: ExportInfo[],
-  include?: (string | RegExp)[],
-  exclude?: (string | RegExp)[],
-): Promise<ExportInfo[]> {
-  if (include?.length) {
-    exportMembers = exportMembers.filter((member) => include.some((rs) => rsTest(rs, member.name)));
-  }
+function formatExportMember(exportKind: ExportInfo['exportKind'], name: string, newName: string): string {
+  const typeIfNeeded = exportKind === 'type' ? 'type ' : '';
 
-  if (exclude?.length) {
-    exportMembers = exportMembers.filter((member) => exclude.some((rs) => !rsTest(rs, member.name)));
+  if (name !== newName) {
+    return `${typeIfNeeded}${name} as ${newName}`;
+  } else {
+    return `${typeIfNeeded}${name}`;
   }
-
-  return [...exportMembers];
 }
 
 async function getIntersectionPaths(
