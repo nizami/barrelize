@@ -3,8 +3,8 @@ import {
   Config,
   DEFAULT_CONFIG,
   formatExportLine,
+  getExportedPathsFromContent,
   handlePaths,
-  indexFileExportedPaths,
   logWarning,
   pathsDifferences,
   TerminalColor,
@@ -12,6 +12,8 @@ import {
 import {existsSync} from 'node:fs';
 import {readFile, writeFile} from 'node:fs/promises';
 import {dirname, join, resolve} from 'node:path';
+
+const BARRELIZE_CONTENT_REGEX = /(?<=\/\/ *barrelize-start *\n)[\s\S]*(?= *\/\/ *barrelize-end)/;
 
 export async function generateBarrels(configDir: string, configPath: string, config: Config): Promise<void> {
   for (const barrelConfig of config.barrels) {
@@ -27,21 +29,21 @@ export async function generateBarrels(configDir: string, configPath: string, con
       continue;
     }
 
-    const exportPaths = await handlePaths(configDir, barrelConfig);
+    const newExportPaths = await handlePaths(configDir, barrelConfig);
+    const insertFinalNewline =
+      barrelConfig.insertFinalNewline ?? config.insertFinalNewline ?? DEFAULT_CONFIG.insertFinalNewline;
 
-    const newLineIfNeeded =
-      barrelConfig.insertFinalNewline ?? config.insertFinalNewline ?? DEFAULT_CONFIG.insertFinalNewline
-        ? '\n'
-        : '';
+    let newContent = newExportPaths.map((x) => formatExportLine(x, config, barrelConfig)).join('\n');
 
-    const newContent =
-      exportPaths.map((x) => formatExportLine(x, config, barrelConfig)).join('\n') + newLineIfNeeded;
-    const exportedText = `${exportPaths.length} file${plural(exportPaths)} exported`;
+    const exportedText = `${newExportPaths.length} file${plural(newExportPaths)} exported`;
 
     if (existsSync(indexFileAbsolutePath)) {
-      const oldContent = (await readFile(indexFileAbsolutePath)).toString();
+      const oldFileContent = (await readFile(indexFileAbsolutePath)).toString();
+      const barrelizeMatch = oldFileContent.match(BARRELIZE_CONTENT_REGEX);
+      const barrelizeContent = barrelizeMatch?.at(0);
+      newContent += insertFinalNewline || barrelizeMatch ? '\n' : '';
 
-      if (newContent === oldContent) {
+      if ((barrelizeContent ?? oldFileContent) === newContent) {
         console.log(
           colorize('IGNORE', TerminalColor.GRAY),
           colorize(indexFileRelativePath, TerminalColor.CYAN),
@@ -51,12 +53,16 @@ export async function generateBarrels(configDir: string, configPath: string, con
         continue;
       }
 
-      const oldPaths = await indexFileExportedPaths(oldContent);
-      await writeFile(indexFileAbsolutePath, newContent);
+      if (barrelizeMatch) {
+        await writeFile(indexFileAbsolutePath, oldFileContent.replace(BARRELIZE_CONTENT_REGEX, newContent));
+      } else {
+        await writeFile(indexFileAbsolutePath, newContent);
+      }
 
+      const oldExportPaths = await getExportedPathsFromContent(barrelizeContent ?? oldFileContent);
       const {insertions, deletions} = pathsDifferences(
-        oldPaths,
-        exportPaths.map((x) => x.modifiedPath),
+        oldExportPaths,
+        newExportPaths.map((x) => x.modifiedPath),
       );
 
       const insertionsText =
@@ -75,6 +81,8 @@ export async function generateBarrels(configDir: string, configPath: string, con
       continue;
     }
 
+    newContent += insertFinalNewline ? '\n' : '';
+
     await writeFile(indexFileAbsolutePath, newContent);
 
     console.log(
@@ -84,6 +92,12 @@ export async function generateBarrels(configDir: string, configPath: string, con
     );
   }
 }
+
+// function ignoreIndexFile(): void {}
+
+// function updateIndexFile(): void {}
+
+// function createIndexFile(): void {}
 
 function printDifferences(insertions: string[], deletions: string[]): void {
   for (const path of insertions) {
