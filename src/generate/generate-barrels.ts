@@ -61,8 +61,8 @@ export async function generateBarrels(configDir: string, configPath: string, con
 
       const oldExportPaths = await getExportedPathsFromContent(barrelizeContent ?? oldFileContent);
       const {insertions, deletions} = pathsDifferences(
-        oldExportPaths,
         newExportPaths.map((x) => x.modifiedPath),
+        oldExportPaths,
       );
 
       const insertionsText =
