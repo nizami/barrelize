@@ -13,7 +13,7 @@ export function logValidationError(message: string, validation: IValidation.IFai
       return `Missing required property '${property}' in configuration`;
     }
 
-    return `Invalid type for property '${property}'`;
+    return `Invalid type for property '${property}', expected '${e.expected}', but ${e.value}`;
   };
 
   const errors = validation.errors.map((x) => `  ` + formatError(x)).join('\n');
