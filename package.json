@@ -1,6 +1,6 @@
 {
   "name": "barrelize",
-  "version": "1.5.2",
+  "version": "1.6.0",
   "description": "Automatically generating index (barrel) files",
   "scripts": {
     "build": "npm run schema && vite build",
