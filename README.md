@@ -74,7 +74,12 @@ Generates barrel (index) files based on your configuration. The tool will:
 ```bash
 npx barrelize                # Uses default .barrelize config
 npx barrelize custom.json    # Uses specified config file
+npx barrelize --watch        # Generate and watch for changes
 ```
+
+Options:
+
+- `-w, --watch`: Watch for changes and regenerate barrel files automatically
 
 ## Configuration
 

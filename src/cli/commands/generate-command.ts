@@ -5,6 +5,7 @@ import {
   logValidationError,
   parseConfig,
   validateConfig,
+  watchBarrels,
 } from '#lib';
 import {existsSync} from 'node:fs';
 import {dirname, resolve} from 'node:path';
@@ -38,5 +39,9 @@ export async function runGenerateCommand(options: GenerateCommandOptions) {
 
   const configDir = resolve(dirname(options.configPath));
 
-  await generateBarrels(configDir, options.configPath, validatedConfig.data);
+  if (options.watch) {
+    watchBarrels(configDir, options.configPath, validatedConfig.data);
+  } else {
+    await generateBarrels(configDir, options.configPath, validatedConfig.data);
+  }
 }

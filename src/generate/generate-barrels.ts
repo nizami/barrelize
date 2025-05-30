@@ -15,7 +15,12 @@ import {dirname, join, resolve} from 'node:path';
 
 const BARRELIZE_CONTENT_REGEX = /(?<=\/\/ *barrelize-start *\n)[\s\S]*(?= *\/\/ *barrelize-end)/;
 
-export async function generateBarrels(configDir: string, configPath: string, config: Config): Promise<void> {
+export async function generateBarrels(
+  configDir: string,
+  configPath: string,
+  config: Config,
+  silentIgnore = false,
+): Promise<void> {
   for (const barrelConfig of config.barrels) {
     const indexFileBasePath = barrelConfig.name ?? DEFAULT_CONFIG.name;
     const indexFileRelativePath = join(barrelConfig.root ?? DEFAULT_CONFIG.root, indexFileBasePath);
@@ -44,11 +49,13 @@ export async function generateBarrels(configDir: string, configPath: string, con
       newContent += insertFinalNewline || barrelizeMatch ? '\n' : '';
 
       if ((barrelizeContent ?? oldFileContent) === newContent) {
-        console.log(
-          colorize('IGNORE', TerminalColor.GRAY),
-          colorize(indexFileRelativePath, TerminalColor.CYAN),
-          colorize(exportedText, TerminalColor.GRAY),
-        );
+        if (!silentIgnore) {
+          console.log(
+            colorize('IGNORE', TerminalColor.GRAY),
+            colorize(indexFileRelativePath, TerminalColor.CYAN),
+            colorize(exportedText, TerminalColor.GRAY),
+          );
+        }
 
         continue;
       }

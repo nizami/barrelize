@@ -17,6 +17,7 @@ export * from './generate/generate-barrels';
 export * from './generate/get-exported-paths-from-content';
 export * from './generate/glob-paths';
 export * from './generate/paths-differences';
+export * from './generate/watch-barrels';
 export * from './regex/try-parse-regex';
 export * from './generate/handlers/handle-path-exports';
 export * from './generate/handlers/handle-path-order';

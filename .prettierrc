@@ -7,5 +7,13 @@
   "singleQuote": true,
   "tabWidth": 2,
   "trailingComma": "all",
-  "useTabs": false
+  "useTabs": false,
+  "overrides": [
+    {
+      "files": ["**/.barrelize"],
+      "options": {
+        "parser": "json"
+      }
+    }
+  ]
 }

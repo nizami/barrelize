@@ -5,9 +5,12 @@ import {name, version} from '../../package.json';
 export function cliInit(): void {
   const cli = cac(name);
 
-  cli.command('[config path]', `Generate barrel files`).action(async (config) => {
-    await runGenerateCommand({configPath: config || '.barrelize'});
-  });
+  cli
+    .command('[config path]', `Generate barrel files`)
+    .option('-w, --watch', 'Watch for changes and regenerate barrel files automatically')
+    .action(async (configPath: string, options: {watch: boolean}) => {
+      await runGenerateCommand({configPath: configPath || '.barrelize', watch: !!options.watch});
+    });
 
   cli
     .command('init [config path]', 'Create .barrelize config file if does not exist')
