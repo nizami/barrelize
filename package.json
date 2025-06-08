@@ -21,9 +21,9 @@
   "author": "Nizami",
   "license": "MIT",
   "devDependencies": {
-    "@babel/parser": "^7.27.2",
-    "@ryoppippi/unplugin-typia": "^2.6.2",
-    "@types/node": "^22.15.17",
+    "@babel/parser": "^7.27.5",
+    "@ryoppippi/unplugin-typia": "^2.6.4",
+    "@types/node": "^22.15.30",
     "cac": "^6.7.14",
     "chokidar": "^4.0.3",
     "glob": "^11.0.2",
@@ -31,10 +31,10 @@
     "ts-json-schema-generator": "^2.4.0",
     "ts-patch": "^3.3.0",
     "typescript": "~5.8.3",
-    "typia": "^9.3.0",
+    "typia": "^9.3.1",
     "vite": "^6.3.5",
-    "vite-plugin-dts": "^4.5.3",
-    "vitest": "^3.1.3"
+    "vite-plugin-dts": "^4.5.4",
+    "vitest": "^3.2.2"
   },
   "bin": {
     "barrelize": "./bin/cli.js"
