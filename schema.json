@@ -46,19 +46,13 @@
             {
               "root": "src",
               "name": "index.ts",
-              "include": [
-                "**/*.ts"
-              ],
-              "exclude": [
-                "**/*.test.ts"
-              ]
+              "include": ["**/*.ts"],
+              "exclude": ["**/*.test.ts"]
             }
           ]
         }
       },
-      "required": [
-        "barrels"
-      ],
+      "required": ["barrels"],
       "additionalProperties": false
     },
     "BarrelConfig": {
@@ -83,9 +77,7 @@
           },
           "description": "Files to include in the barrel (supports glob patterns)",
           "markdownDescription": "Files to include in the barrel (supports glob patterns)",
-          "default": [
-            "**/*.ts"
-          ]
+          "default": ["**/*.ts"]
         },
         "exclude": {
           "type": "array",
@@ -125,8 +117,8 @@
             "items": {
               "type": "string"
             },
-            "description": "Glob pattern exports file with string or regular expression patterns (e.g. \"**\\/*service.ts\": [\"* as lib\", \"/(.+)Config$/ as $1LibConfig\", \"util\"])",
-            "markdownDescription": "Glob pattern exports file with string or regular expression patterns\n(e.g. \"**\\/*service.ts\": [\"* as lib\", \"/(.+)Config$/ as $1LibConfig\", \"util\"])"
+            "description": "Glob pattern exports file with string or regular expression patterns. Supports variables: $filename (filename without extension) and $exportName (actual default export name). Example: \"**\\/*service.ts\": [\"* as lib\", \"/(.+)Config$/ as $1LibConfig\", \"default as $filename\", \"default as $exportName\"]",
+            "markdownDescription": "Glob pattern exports file with string or regular expression patterns\n\nSupports variables:\n- `$filename` - filename without extension\n- `$exportName` - actual default export name\n\nExample: `\"**\\/*service.ts\": [\"* as lib\", \"/(.+)Config$/ as $1LibConfig\", \"default as $filename\", \"default as $exportName\"]`"
           },
           "description": "Configuration for exports in barrel files",
           "markdownDescription": "Configuration for exports in barrel files",
