@@ -13,7 +13,7 @@ import {createValidateEquals} from 'typia';
 
 const validateGenerateOptions = createValidateEquals<GenerateCommandOptions>();
 
-export async function runGenerateCommand(options: GenerateCommandOptions) {
+export function runGenerateCommand(options: GenerateCommandOptions) {
   const validatedOptions = validateGenerateOptions(options);
 
   if (!validatedOptions.success) {
@@ -28,7 +28,7 @@ export async function runGenerateCommand(options: GenerateCommandOptions) {
     return;
   }
 
-  const config = await parseConfig(options.configPath);
+  const config = parseConfig(options.configPath);
   const validatedConfig = validateConfig(config);
 
   if (!validatedConfig.success) {
@@ -42,6 +42,6 @@ export async function runGenerateCommand(options: GenerateCommandOptions) {
   if (options.watch) {
     watchBarrels(configDir, options.configPath, validatedConfig.data);
   } else {
-    await generateBarrels(configDir, options.configPath, validatedConfig.data);
+    generateBarrels(configDir, options.configPath, validatedConfig.data);
   }
 }

@@ -1,10 +1,10 @@
 import {Config, logError} from '#lib';
 import JSON5 from 'json5';
-import {readFile} from 'node:fs/promises';
+import {readFileSync} from 'node:fs';
 
-export async function parseConfig(configPath: string): Promise<Config | null> {
-  const configJson = (await readFile(configPath)).toString();
-  //
+export function parseConfig(configPath: string): Config | null {
+  const configJson = readFileSync(configPath).toString();
+
   try {
     return JSON5.parse(configJson);
   } catch (error: unknown) {

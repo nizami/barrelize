@@ -28,8 +28,8 @@ export async function generateBarrels(
     const indexDirectory = dirname(indexFileAbsolutePath);
 
     if (!existsSync(indexDirectory)) {
-      console.error(logWarning(`Index directory '${indexDirectory}' does not exist - skipping`));
-      console.error(logWarning(`  Please verify the directory path in your '${configPath}' configuration`));
+      logWarning(`Index directory '${indexDirectory}' does not exist - skipping`);
+      logWarning(`  Please verify the directory path in your '${configPath}' configuration`);
 
       continue;
     }
@@ -99,12 +99,6 @@ export async function generateBarrels(
     );
   }
 }
-
-// function ignoreIndexFile(): void {}
-
-// function updateIndexFile(): void {}
-
-// function createIndexFile(): void {}
 
 function printDifferences(insertions: string[], deletions: string[]): void {
   for (const path of insertions) {
