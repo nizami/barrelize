@@ -1,25 +1,9 @@
 {
-  "name": "barrelize",
-  "version": "1.6.4",
-  "description": "Automatically generating index (barrel) files",
-  "scripts": {
-    "build": "npm run schema && vite build",
-    "schema": "ts-json-schema-generator -p src/config/config.ts -t 'Config' -o schema.json --unstable --markdown-description",
-    "prepare": "ts-patch install",
-    "test": "vitest run"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git@github.com/nizami/barrelize"
-  },
-  "keywords": [
-    "barrels",
-    "typescript",
-    "index",
-    "file"
-  ],
   "author": "Nizami",
-  "license": "MIT",
+  "bin": {
+    "barrelize": "./bin/cli.js"
+  },
+  "description": "Automatically generating index (barrel) files",
   "devDependencies": {
     "@babel/parser": "^7.28.5",
     "@ryoppippi/unplugin-typia": "^2.6.5",
@@ -36,21 +20,37 @@
     "vite-plugin-dts": "^4.5.4",
     "vitest": "^4.0.6"
   },
-  "bin": {
-    "barrelize": "./bin/cli.js"
+  "exports": {
+    ".": {
+      "import": "./lib/index.js",
+      "types": "./lib/src/index.d.ts"
+    }
   },
-  "type": "module",
-  "sideEffects": false,
   "files": [
     "bin",
     "lib",
     "schema.json"
   ],
+  "keywords": [
+    "barrels",
+    "typescript",
+    "index.ts",
+    "index.js"
+  ],
+  "license": "MIT",
+  "name": "barrelize",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com/nizami/barrelize"
+  },
+  "scripts": {
+    "build": "npm run schema && vite build",
+    "prepare": "ts-patch install",
+    "schema": "ts-json-schema-generator -p src/config/config.ts -t 'Config' -o schema.json --unstable --markdown-description",
+    "test": "vitest run"
+  },
+  "sideEffects": false,
+  "type": "module",
   "types": "./lib/src/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./lib/src/index.d.ts",
-      "import": "./lib/index.js"
-    }
-  }
+  "version": "1.6.4"
 }
