@@ -8,8 +8,8 @@ export function cliInit(): void {
   cli
     .command('[config path]', `Generate barrel files`)
     .option('-w, --watch', 'Watch for changes and regenerate barrel files automatically')
-    .action(async (configPath: string, options: {watch: boolean}) => {
-      await runGenerateCommand({configPath: configPath || '.barrelize', watch: !!options.watch});
+    .action((configPath: string, options: {watch: boolean}) => {
+      runGenerateCommand({configPath: configPath || '.barrelize', watch: !!options.watch});
     });
 
   cli

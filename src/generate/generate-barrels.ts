@@ -29,7 +29,7 @@ export async function generateBarrels(
 
     if (!existsSync(indexDirectory)) {
       logWarning(`Index directory '${indexDirectory}' does not exist - skipping`);
-      logWarning(`  Please verify the directory path in your '${configPath}' configuration`);
+      logWarning(`  Please verify the 'root' path in your '${configPath}' configuration`);
 
       continue;
     }

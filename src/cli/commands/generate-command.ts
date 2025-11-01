@@ -7,7 +7,7 @@ import {
   validateConfig,
   watchBarrels,
 } from '#lib';
-import {existsSync} from 'node:fs';
+import {statSync} from 'node:fs';
 import {dirname, resolve} from 'node:path';
 import {createValidateEquals} from 'typia';
 
@@ -22,7 +22,9 @@ export function runGenerateCommand(options: GenerateCommandOptions) {
     return;
   }
 
-  if (!existsSync(options.configPath)) {
+  const configPathStat = statSync(options.configPath);
+
+  if (!configPathStat.isFile()) {
     logError(`Couldn't find barrelize config file with path '${options.configPath}'`);
 
     return;
