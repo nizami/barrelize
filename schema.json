@@ -131,7 +131,7 @@
           "description": "Configuration for exports in barrel files",
           "markdownDescription": "Configuration for exports in barrel files",
           "default": {
-            "**/*.ts": {}
+            "**/*.ts": []
           }
         },
         "bracketSpacing": {

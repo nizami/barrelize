@@ -36,7 +36,7 @@ export type BarrelConfig = {
   };
   /**
    * Configuration for exports in barrel files
-   * @default {'**\/*.ts': {}}
+   * @default {'**\/*.ts': []}
    */
   exports?: {
     /**

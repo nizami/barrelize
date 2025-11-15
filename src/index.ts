@@ -7,7 +7,6 @@ export * from './log/log-validation-error';
 export * from './log/log';
 export * from './config/barrel-config';
 export * from './config/config';
-export * from './config/exports-config';
 export * from './config/parse-config';
 export * from './extract-exports/extract-exports-options';
 export * from './extract-exports/extract-exports';

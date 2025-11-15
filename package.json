@@ -44,7 +44,7 @@
     "url": "git@github.com/nizami/barrelize"
   },
   "scripts": {
-    "build": "npm run schema && vite build",
+    "build": "npx barrelize && npm run schema && vite build",
     "prepare": "ts-patch install",
     "schema": "ts-json-schema-generator -p src/config/config.ts -t 'Config' -o schema.json --unstable --markdown-description",
     "test": "vitest run"
