@@ -7,6 +7,7 @@ import {extname} from 'node:path';
 export type ExportInfo = {
   name: string;
   exportKind?: 'type' | 'value' | null | undefined;
+  actualName?: string;
 };
 
 export async function extractExports(sourcePath: string): Promise<ExportInfo[]> {
@@ -65,7 +66,12 @@ async function extractExportsFromAst(ast: ParseResult, options: ExtractExportsOp
         });
       }
     } else if (node.type === 'ExportDefaultDeclaration') {
-      exports.push({name: 'default', exportKind: node.exportKind});
+      const actualName = extractDefaultExportName(node.declaration);
+      const exportInfo: ExportInfo = {name: 'default', exportKind: node.exportKind};
+      if (actualName) {
+        exportInfo.actualName = actualName;
+      }
+      exports.push(exportInfo);
     } else if (node.type === 'ExportAllDeclaration') {
       if (options.recursive) {
         const normalizedPath = normalizeSourcePath(node.source.value, options);
@@ -81,6 +87,22 @@ async function extractExportsFromAst(ast: ParseResult, options: ExtractExportsOp
   }
 
   return exports;
+}
+
+function extractDefaultExportName(declaration: any): string | undefined {
+  if (!declaration) {
+    return undefined;
+  }
+
+  if (declaration.id?.name) {
+    return declaration.id.name;
+  }
+
+  if (declaration.type === 'Identifier' && declaration.name) {
+    return declaration.name;
+  }
+
+  return undefined;
 }
 
 function parseFileContent(fileContent: string): ParseResult {
