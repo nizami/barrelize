@@ -31,7 +31,7 @@ describe('edge cases', () => {
       ],
     });
 
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
     expect(indexContent).toContain("export * from './valid';");
@@ -54,7 +54,7 @@ describe('edge cases', () => {
       ],
     });
 
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
     expect(indexContent).toContain("export * from './file-with-dash';");
@@ -78,7 +78,7 @@ describe('edge cases', () => {
       ],
     });
 
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
     expect(indexContent).toContain('файл');
@@ -101,7 +101,7 @@ describe('edge cases', () => {
       ],
     });
 
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
     expect(indexContent).toContain("export * from './empty';");
@@ -127,7 +127,7 @@ describe('edge cases', () => {
       ],
     });
 
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
     expect(indexContent).toContain("export * from './comments';");
@@ -151,7 +151,7 @@ describe('edge cases', () => {
       ],
     });
 
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
     expect(indexContent).toContain('typescript');
@@ -176,7 +176,7 @@ describe('edge cases', () => {
       ],
     });
 
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
     expect(indexContent).toContain("export * from './a/b/c/d/e/f/g/h/deep';");
@@ -198,7 +198,7 @@ describe('edge cases', () => {
       ],
     });
 
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
     expect(indexContent).toContain("export * from './no-exports';");
@@ -220,7 +220,7 @@ describe('edge cases', () => {
       ],
     });
 
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
     const occurrences = (indexContent.match(/component\.tsx/g) || []).length;
@@ -243,7 +243,7 @@ describe('edge cases', () => {
       ],
     });
 
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
     expect(indexContent).toContain("export * from './01-first';");
@@ -265,7 +265,7 @@ describe('edge cases', () => {
       ],
     });
 
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
     expect(indexContent).toContain('file.TS');
@@ -287,7 +287,7 @@ describe('edge cases', () => {
       ],
     });
 
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
     expect(indexContent).toContain("export * from './a';");
@@ -309,7 +309,7 @@ describe('edge cases', () => {
       ],
     });
 
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
     expect(indexContent).toContain("export * from './bom';");
@@ -331,7 +331,7 @@ describe('edge cases', () => {
       ],
     });
 
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
     expect(indexContent).toContain("export * from './crlf';");
@@ -356,7 +356,7 @@ describe('edge cases', () => {
       ],
     });
 
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
     expect(indexContent).toContain("export { Button } from './Button';");
@@ -380,7 +380,7 @@ describe('edge cases', () => {
       ],
     });
 
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
     expect(indexContent).toContain("export { default } from './component';");
@@ -401,7 +401,7 @@ describe('edge cases', () => {
       ],
     });
 
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
     expect(indexContent).toContain("export * from './reexport';");

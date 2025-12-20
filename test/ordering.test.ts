@@ -32,7 +32,7 @@ describe('ordering', () => {
       ],
     });
 
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
     const lines = indexContent.split('\n').filter((l) => l.trim());
@@ -60,7 +60,7 @@ describe('ordering', () => {
       ],
     });
 
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
     const lines = indexContent.split('\n').filter((l) => l.trim());
@@ -88,7 +88,7 @@ describe('ordering', () => {
       ],
     });
 
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
     const lines = indexContent.split('\n').filter((l) => l.trim());
@@ -117,7 +117,7 @@ describe('ordering', () => {
       ],
     });
 
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
     const lines = indexContent.split('\n').filter((l) => l.trim());
@@ -144,7 +144,7 @@ describe('ordering', () => {
       ],
     });
 
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
     const lines = indexContent.split('\n').filter((l) => l.trim());
@@ -172,7 +172,7 @@ describe('ordering', () => {
       ],
     });
 
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
     const lines = indexContent.split('\n').filter((l) => l.trim());
@@ -200,7 +200,7 @@ describe('ordering', () => {
       ],
     });
 
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
     const lines = indexContent.split('\n').filter((l) => l.trim());
@@ -228,7 +228,7 @@ describe('ordering', () => {
       ],
     });
 
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
     const lines = indexContent.split('\n').filter((l) => l.trim());
@@ -254,7 +254,7 @@ describe('ordering', () => {
       ],
     });
 
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
     const lines = indexContent.split('\n').filter((l) => l.trim());
@@ -281,7 +281,7 @@ describe('ordering', () => {
       ],
     });
 
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
     const lines = indexContent.split('\n').filter((l) => l.trim());
@@ -311,7 +311,7 @@ describe('ordering', () => {
       ],
     });
 
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
     const lines = indexContent.split('\n').filter((l) => l.trim());

@@ -36,7 +36,7 @@ export const bar = 2;`,
         },
       ],
     });
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
     expect(indexContent).toContain("export * from './utils';");
@@ -64,7 +64,7 @@ export const baz = 3;`,
         },
       ],
     });
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
     expect(indexContent).toContain("export { foo, bar } from './utils';");
@@ -88,7 +88,7 @@ export const baz = 3;`,
         },
       ],
     });
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
     expect(indexContent).toContain("export { default } from './component';");
@@ -115,7 +115,7 @@ export const bar = 2;`,
         },
       ],
     });
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
     expect(indexContent).toContain("export * as utils from './utils';");
@@ -140,7 +140,7 @@ export const helper = () => {};`,
         },
       ],
     });
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
     expect(indexContent).toContain("export * from './component';");
@@ -167,7 +167,7 @@ export const InputConfig = { type: 'text' };`,
         },
       ],
     });
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
     expect(indexContent).toContain('ButtonConfig');
@@ -196,7 +196,7 @@ export default function defaultFn() {}`,
         },
       ],
     });
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
     expect(indexContent).toContain("export { foo, default } from './utils';");
@@ -224,7 +224,7 @@ export const value = 1;`,
         },
       ],
     });
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
     expect(indexContent).toContain('type User');
@@ -254,7 +254,7 @@ export const bar = 2;`,
         },
       ],
     });
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
     expect(indexContent).toContain("export { foo } from './a';");
@@ -278,7 +278,7 @@ export const bar = 2;`,
         },
       ],
     });
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
     expect(indexContent).toContain("export { foo as bar } from './utils';");
@@ -305,7 +305,7 @@ export const bar = 2;`,
         },
       ],
     });
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
     expect(indexContent).toContain("export { default } from './components/button';");
@@ -329,7 +329,7 @@ export const bar = 2;`,
         },
       ],
     });
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
     expect(indexContent).toContain("export * from './utils';");
@@ -352,7 +352,7 @@ export const bar = 2;`,
         },
       ],
     });
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
     expect(indexContent).toContain('nonExistent');
@@ -379,7 +379,7 @@ export const b = 2;`,
         },
       ],
     });
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
     expect(indexContent).toContain("export * as helperLib from './helpers';");

@@ -41,7 +41,7 @@ describe('ordering', () => {
       ],
     });
 
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'index.ts'), 'utf-8');
 
@@ -75,7 +75,7 @@ describe('ordering', () => {
       ],
     });
 
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'index.ts'), 'utf-8');
 
@@ -104,7 +104,7 @@ describe('ordering', () => {
       ],
     });
 
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'index.ts'), 'utf-8');
 
@@ -132,7 +132,7 @@ describe('ordering', () => {
       ],
     });
 
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'index.ts'), 'utf-8');
 
@@ -162,7 +162,7 @@ export const formatTime = () => 'time';`,
       ],
     });
 
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'index.ts'), 'utf-8');
 
@@ -190,7 +190,7 @@ export const formatTime = () => 'time';`,
       ],
     });
 
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'index.ts'), 'utf-8');
 
@@ -221,7 +221,7 @@ export const formatTime = () => 'time';`,
       ],
     });
 
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'index.ts'), 'utf-8');
 
@@ -249,7 +249,7 @@ export const formatTime = () => 'time';`,
       ],
     });
 
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'index.ts'), 'utf-8');
 
@@ -274,7 +274,7 @@ export const formatTime = () => 'time';`,
       ],
     });
 
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'index.ts'), 'utf-8');
 
@@ -299,7 +299,7 @@ export const formatTime = () => 'time';`,
       ],
     });
 
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'index.ts'), 'utf-8');
 
@@ -332,7 +332,7 @@ export const formatTime = () => 'time';`,
       ],
     });
 
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'index.ts'), 'utf-8');
 
@@ -361,7 +361,7 @@ export const formatTime = () => 'time';`,
       ],
     });
 
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'index.ts'), 'utf-8');
 
@@ -389,7 +389,7 @@ export const formatTime = () => 'time';`,
       ],
     });
 
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'index.ts'), 'utf-8');
 

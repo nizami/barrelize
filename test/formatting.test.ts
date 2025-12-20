@@ -31,7 +31,7 @@ describe('ordering', () => {
         },
       ],
     });
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
     expect(indexContent).toContain('export { foo } from');
@@ -55,7 +55,7 @@ describe('ordering', () => {
       ],
     });
 
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
     expect(indexContent).toContain('export {foo} from');
@@ -74,7 +74,7 @@ describe('ordering', () => {
         },
       ],
     });
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
   });
 
   test('should use double quotes', async () => {
@@ -91,7 +91,7 @@ describe('ordering', () => {
         },
       ],
     });
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
     expect(indexContent).toContain('from "./utils"');
@@ -110,7 +110,7 @@ describe('ordering', () => {
         },
       ],
     });
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
   });
 
   test('should disable semicolons', async () => {
@@ -127,7 +127,7 @@ describe('ordering', () => {
         },
       ],
     });
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
     expect(indexContent).not.toContain(';');
@@ -147,7 +147,7 @@ describe('ordering', () => {
         },
       ],
     });
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
   });
 
   test('should disable final newline', async () => {
@@ -164,7 +164,7 @@ describe('ordering', () => {
         },
       ],
     });
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
     expect(indexContent.endsWith('\n')).toBe(false);
@@ -194,7 +194,7 @@ describe('ordering', () => {
         },
       ],
     });
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const srcContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
     expect(srcContent).toContain("from './utils';");
@@ -224,7 +224,7 @@ describe('ordering', () => {
         },
       ],
     });
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
     expect(indexContent).toBe('export {foo} from "./utils"');
@@ -253,7 +253,7 @@ export const bar = 2;`,
         },
       ],
     });
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
     expect(indexContent).toContain("export { foo, bar } from './utils';");
@@ -274,7 +274,7 @@ export const bar = 2;`,
         },
       ],
     });
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
     expect(indexContent).toContain('export * from "./utils"');
@@ -298,7 +298,7 @@ export const bar = 2;`,
         },
       ],
     });
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
     expect(indexContent).toContain('export * as utils from "./utils";');
@@ -321,7 +321,7 @@ export const bar = 2;`,
         },
       ],
     });
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
     expect(indexContent).toContain('export {foo} from');
@@ -351,7 +351,7 @@ export const c = 3;`,
         },
       ],
     });
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
     expect(indexContent).toContain("export { a, b, c } from './utils';");

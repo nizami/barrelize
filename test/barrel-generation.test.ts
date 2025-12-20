@@ -31,7 +31,7 @@ describe('barrel generation', () => {
       ],
     });
 
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexPath = join(testDir, 'src', 'index.ts');
     expect(existsSync(indexPath)).toBe(true);
@@ -58,7 +58,7 @@ describe('barrel generation', () => {
       ],
     });
 
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
     expect(indexContent).toContain("export * from './a';");
@@ -81,7 +81,7 @@ describe('barrel generation', () => {
       ],
     });
 
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
     expect(indexContent).toContain("export * from './component.tsx';");
@@ -105,7 +105,7 @@ describe('barrel generation', () => {
       ],
     });
 
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
     expect(indexContent).toContain("export * from './component';");
@@ -134,7 +134,7 @@ describe('barrel generation', () => {
       ],
     });
 
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const srcIndex = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
     expect(srcIndex).toContain("export * from './a';");
@@ -158,7 +158,7 @@ describe('barrel generation', () => {
       ],
     });
 
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexPath = join(testDir, 'src', 'exports.ts');
     expect(existsSync(indexPath)).toBe(true);
@@ -182,7 +182,7 @@ describe('barrel generation', () => {
       ],
     });
 
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
     expect(indexContent).toContain("export * from './components/forms/input';");
@@ -201,7 +201,7 @@ describe('barrel generation', () => {
       ],
     });
 
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexPath = join(testDir, 'src', 'index.ts');
     expect(existsSync(indexPath)).toBe(true);
@@ -225,7 +225,7 @@ describe('barrel generation', () => {
       ],
     });
 
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
     expect(indexContent.trim()).toBe('');
@@ -247,7 +247,7 @@ describe('barrel generation', () => {
       ],
     });
 
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
     expect(indexContent).toContain("export * from './a';");
@@ -271,7 +271,7 @@ describe('barrel generation', () => {
       ],
     });
 
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
     expect(indexContent).toContain("export * from './component.tsx';");
@@ -292,7 +292,7 @@ describe('barrel generation', () => {
       ],
     });
 
-    await generateBarrels(testDir, '.barrelize', config, true);
+    await generateBarrels(testDir, config);
 
     const indexContent = readFileSync(join(testDir, 'index.ts'), 'utf-8');
     expect(indexContent).toContain("export * from './a';");
