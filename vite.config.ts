@@ -1,4 +1,5 @@
 import {resolve} from 'node:path';
+import dts from 'unplugin-dts/vite';
 import {defineConfig} from 'vite';
 
 const WORKSPACE_ROOT = resolve(import.meta.dirname);
@@ -45,4 +46,5 @@ export default defineConfig({
       ],
     },
   },
+  plugins: [dts({ bundleTypes: true})],
 });

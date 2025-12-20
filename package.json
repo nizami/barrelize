@@ -1,11 +1,45 @@
 {
+  "name": "barrelize",
+  "version": "1.7.1",
+  "description": "Automatically generating index (barrel) files",
   "author": "Nizami",
+  "license": "MIT",
+  "keywords": [
+    "barrels",
+    "typescript",
+    "index.ts",
+    "index.js"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git@github.com/nizami/barrelize"
+  },
+  "type": "module",
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./lib/index.js",
+      "types": "./lib/index.d.ts"
+    }
+  },
   "bin": {
     "barrelize": "./bin/cli.js"
   },
-  "description": "Automatically generating index (barrel) files",
+  "files": [
+    "bin",
+    "lib",
+    "schema.json"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "build": "npx barrelize && npm run schema && vite build",
+    "schema": "tsx scripts/schema.script.ts > schema.json",
+    "test": "vitest run"
+  },
   "devDependencies": {
     "@babel/parser": "^7.28.5",
+    "@microsoft/api-extractor": "^7.55.2",
     "@types/node": "^25.0.3",
     "cac": "^6.7.14",
     "chokidar": "^5.0.0",
@@ -13,40 +47,9 @@
     "json5": "^2.2.3",
     "tsx": "^4.21.0",
     "typescript": "~5.9.3",
+    "unplugin-dts": "^1.0.0-beta.6",
     "vite": "^7.3.0",
     "vitest": "^4.0.16",
     "zod": "^4.2.1"
-  },
-  "exports": {
-    ".": {
-      "import": "./lib/index.js",
-      "types": "./lib/src/index.d.ts"
-    }
-  },
-  "files": [
-    "bin",
-    "lib",
-    "schema.json"
-  ],
-  "keywords": [
-    "barrels",
-    "typescript",
-    "index.ts",
-    "index.js"
-  ],
-  "license": "MIT",
-  "name": "barrelize",
-  "repository": {
-    "type": "git",
-    "url": "git@github.com/nizami/barrelize"
-  },
-  "scripts": {
-    "build": "npx barrelize && npm run schema && vite build",
-    "schema": "tsx scripts/schema.script.ts > schema.json",
-    "test": "vitest run"
-  },
-  "sideEffects": false,
-  "type": "module",
-  "types": "./lib/src/index.d.ts",
-  "version": "1.7.1"
+  }
 }
