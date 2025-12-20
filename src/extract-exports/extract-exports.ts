@@ -1,5 +1,6 @@
 import {ExtractExportsOptions, logDebug} from '#lib';
 import {parse, ParseResult} from '@babel/parser';
+import {ExportDefaultDeclaration} from '@babel/types';
 import {existsSync} from 'node:fs';
 import {readFile} from 'node:fs/promises';
 import {extname} from 'node:path';
@@ -7,7 +8,7 @@ import {extname} from 'node:path';
 export type ExportInfo = {
   name: string;
   exportKind?: 'type' | 'value' | null | undefined;
-  actualName?: string;
+  exportName?: string | undefined;
 };
 
 export async function extractExports(sourcePath: string): Promise<ExportInfo[]> {
@@ -66,12 +67,11 @@ async function extractExportsFromAst(ast: ParseResult, options: ExtractExportsOp
         });
       }
     } else if (node.type === 'ExportDefaultDeclaration') {
-      const actualName = extractDefaultExportName(node.declaration);
-      const exportInfo: ExportInfo = {name: 'default', exportKind: node.exportKind};
-      if (actualName) {
-        exportInfo.actualName = actualName;
-      }
-      exports.push(exportInfo);
+      exports.push({
+        name: 'default',
+        exportKind: node.exportKind,
+        exportName: extractDeclarationName(node.declaration),
+      });
     } else if (node.type === 'ExportAllDeclaration') {
       if (options.recursive) {
         const normalizedPath = normalizeSourcePath(node.source.value, options);
@@ -89,17 +89,17 @@ async function extractExportsFromAst(ast: ParseResult, options: ExtractExportsOp
   return exports;
 }
 
-function extractDefaultExportName(declaration: any): string | undefined {
-  if (!declaration) {
-    return undefined;
-  }
-
-  if (declaration.id?.name) {
-    return declaration.id.name;
-  }
-
-  if (declaration.type === 'Identifier' && declaration.name) {
+function extractDeclarationName(declaration: ExportDefaultDeclaration['declaration']): string | undefined {
+  if (declaration.type === 'Identifier') {
     return declaration.name;
+  }
+
+  if (
+    declaration.type === 'TSDeclareFunction' ||
+    declaration.type === 'FunctionDeclaration' ||
+    declaration.type === 'ClassDeclaration'
+  ) {
+    return declaration.id?.name;
   }
 
   return undefined;

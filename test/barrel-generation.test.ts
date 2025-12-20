@@ -1,6 +1,7 @@
+import {$Config} from '#lib';
 import {existsSync, mkdirSync, readFileSync, rmSync, writeFileSync} from 'node:fs';
 import {join} from 'node:path';
-import {afterEach, beforeEach, expect, test} from 'vitest';
+import {afterEach, beforeEach, describe, expect, test} from 'vitest';
 import {generateBarrels} from '../src/generate/generate-barrels';
 
 const testDir = join(__dirname, 'test-fixtures', 'barrel-generation');
@@ -13,16 +14,14 @@ afterEach(() => {
   rmSync(testDir, {recursive: true, force: true});
 });
 
-test('should create a basic barrel file', async () => {
-  mkdirSync(join(testDir, 'src'), {recursive: true});
+describe('barrel generation', () => {
+  test('should create a basic barrel file', async () => {
+    mkdirSync(join(testDir, 'src'), {recursive: true});
 
-  writeFileSync(join(testDir, 'src', 'a.ts'), 'export const a = 1;');
-  writeFileSync(join(testDir, 'src', 'b.ts'), 'export const b = 2;');
+    writeFileSync(join(testDir, 'src', 'a.ts'), 'export const a = 1;');
+    writeFileSync(join(testDir, 'src', 'b.ts'), 'export const b = 2;');
 
-  await generateBarrels(
-    testDir,
-    '.barrelize',
-    {
+    const config = $Config.decode({
       barrels: [
         {
           root: 'src',
@@ -30,28 +29,25 @@ test('should create a basic barrel file', async () => {
           include: ['**/*.ts'],
         },
       ],
-    },
-    true,
-  );
+    });
 
-  const indexPath = join(testDir, 'src', 'index.ts');
-  expect(existsSync(indexPath)).toBe(true);
+    await generateBarrels(testDir, '.barrelize', config, true);
 
-  const indexContent = readFileSync(indexPath, 'utf-8');
-  expect(indexContent).toContain("export * from './a';");
-  expect(indexContent).toContain("export * from './b';");
-});
+    const indexPath = join(testDir, 'src', 'index.ts');
+    expect(existsSync(indexPath)).toBe(true);
 
-test('should update existing barrel file', async () => {
-  mkdirSync(join(testDir, 'src'), {recursive: true});
+    const indexContent = readFileSync(indexPath, 'utf-8');
+    expect(indexContent).toContain("export * from './a';");
+    expect(indexContent).toContain("export * from './b';");
+  });
 
-  writeFileSync(join(testDir, 'src', 'a.ts'), 'export const a = 1;');
-  writeFileSync(join(testDir, 'src', 'index.ts'), "export * from './old';");
+  test('should update existing barrel file', async () => {
+    mkdirSync(join(testDir, 'src'), {recursive: true});
 
-  await generateBarrels(
-    testDir,
-    '.barrelize',
-    {
+    writeFileSync(join(testDir, 'src', 'a.ts'), 'export const a = 1;');
+    writeFileSync(join(testDir, 'src', 'index.ts'), "export * from './old';");
+
+    const config = $Config.decode({
       barrels: [
         {
           root: 'src',
@@ -60,25 +56,22 @@ test('should update existing barrel file', async () => {
           exclude: ['**/index.ts'],
         },
       ],
-    },
-    true,
-  );
+    });
 
-  const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
-  expect(indexContent).toContain("export * from './a';");
-  expect(indexContent).not.toContain("export * from './old';");
-});
+    await generateBarrels(testDir, '.barrelize', config, true);
 
-test('should handle include patterns', async () => {
-  mkdirSync(join(testDir, 'src'), {recursive: true});
+    const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
+    expect(indexContent).toContain("export * from './a';");
+    expect(indexContent).not.toContain("export * from './old';");
+  });
 
-  writeFileSync(join(testDir, 'src', 'component.tsx'), 'export const Component = () => {};');
-  writeFileSync(join(testDir, 'src', 'util.ts'), 'export const util = 1;');
+  test('should handle include patterns', async () => {
+    mkdirSync(join(testDir, 'src'), {recursive: true});
 
-  await generateBarrels(
-    testDir,
-    '.barrelize',
-    {
+    writeFileSync(join(testDir, 'src', 'component.tsx'), 'export const Component = () => {};');
+    writeFileSync(join(testDir, 'src', 'util.ts'), 'export const util = 1;');
+
+    const config = $Config.decode({
       barrels: [
         {
           root: 'src',
@@ -86,25 +79,22 @@ test('should handle include patterns', async () => {
           include: ['**/*.tsx'],
         },
       ],
-    },
-    true,
-  );
+    });
 
-  const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
-  expect(indexContent).toContain("export * from './component.tsx';");
-  expect(indexContent).not.toContain('util');
-});
+    await generateBarrels(testDir, '.barrelize', config, true);
 
-test('should handle exclude patterns', async () => {
-  mkdirSync(join(testDir, 'src'), {recursive: true});
+    const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
+    expect(indexContent).toContain("export * from './component.tsx';");
+    expect(indexContent).not.toContain('util');
+  });
 
-  writeFileSync(join(testDir, 'src', 'component.ts'), 'export const component = 1;');
-  writeFileSync(join(testDir, 'src', 'component.test.ts'), 'test("something", () => {});');
+  test('should handle exclude patterns', async () => {
+    mkdirSync(join(testDir, 'src'), {recursive: true});
 
-  await generateBarrels(
-    testDir,
-    '.barrelize',
-    {
+    writeFileSync(join(testDir, 'src', 'component.ts'), 'export const component = 1;');
+    writeFileSync(join(testDir, 'src', 'component.test.ts'), 'test("something", () => {});');
+
+    const config = $Config.decode({
       barrels: [
         {
           root: 'src',
@@ -113,26 +103,23 @@ test('should handle exclude patterns', async () => {
           exclude: ['**/*.test.ts'],
         },
       ],
-    },
-    true,
-  );
+    });
 
-  const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
-  expect(indexContent).toContain("export * from './component';");
-  expect(indexContent).not.toContain('test');
-});
+    await generateBarrels(testDir, '.barrelize', config, true);
 
-test('should handle multiple barrels', async () => {
-  mkdirSync(join(testDir, 'src'), {recursive: true});
-  mkdirSync(join(testDir, 'lib'), {recursive: true});
+    const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
+    expect(indexContent).toContain("export * from './component';");
+    expect(indexContent).not.toContain('test');
+  });
 
-  writeFileSync(join(testDir, 'src', 'a.ts'), 'export const a = 1;');
-  writeFileSync(join(testDir, 'lib', 'b.ts'), 'export const b = 2;');
+  test('should handle multiple barrels', async () => {
+    mkdirSync(join(testDir, 'src'), {recursive: true});
+    mkdirSync(join(testDir, 'lib'), {recursive: true});
 
-  await generateBarrels(
-    testDir,
-    '.barrelize',
-    {
+    writeFileSync(join(testDir, 'src', 'a.ts'), 'export const a = 1;');
+    writeFileSync(join(testDir, 'lib', 'b.ts'), 'export const b = 2;');
+
+    const config = $Config.decode({
       barrels: [
         {
           root: 'src',
@@ -145,26 +132,23 @@ test('should handle multiple barrels', async () => {
           include: ['**/*.ts'],
         },
       ],
-    },
-    true,
-  );
+    });
 
-  const srcIndex = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
-  expect(srcIndex).toContain("export * from './a';");
+    await generateBarrels(testDir, '.barrelize', config, true);
 
-  const libIndex = readFileSync(join(testDir, 'lib', 'index.ts'), 'utf-8');
-  expect(libIndex).toContain("export * from './b';");
-});
+    const srcIndex = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
+    expect(srcIndex).toContain("export * from './a';");
 
-test('should handle custom index file name', async () => {
-  mkdirSync(join(testDir, 'src'), {recursive: true});
+    const libIndex = readFileSync(join(testDir, 'lib', 'index.ts'), 'utf-8');
+    expect(libIndex).toContain("export * from './b';");
+  });
 
-  writeFileSync(join(testDir, 'src', 'a.ts'), 'export const a = 1;');
+  test('should handle custom index file name', async () => {
+    mkdirSync(join(testDir, 'src'), {recursive: true});
 
-  await generateBarrels(
-    testDir,
-    '.barrelize',
-    {
+    writeFileSync(join(testDir, 'src', 'a.ts'), 'export const a = 1;');
+
+    const config = $Config.decode({
       barrels: [
         {
           root: 'src',
@@ -172,26 +156,23 @@ test('should handle custom index file name', async () => {
           include: ['**/*.ts'],
         },
       ],
-    },
-    true,
-  );
+    });
 
-  const indexPath = join(testDir, 'src', 'exports.ts');
-  expect(existsSync(indexPath)).toBe(true);
+    await generateBarrels(testDir, '.barrelize', config, true);
 
-  const indexContent = readFileSync(indexPath, 'utf-8');
-  expect(indexContent).toContain("export * from './a';");
-});
+    const indexPath = join(testDir, 'src', 'exports.ts');
+    expect(existsSync(indexPath)).toBe(true);
 
-test('should handle nested directory structure', async () => {
-  mkdirSync(join(testDir, 'src', 'components', 'forms'), {recursive: true});
+    const indexContent = readFileSync(indexPath, 'utf-8');
+    expect(indexContent).toContain("export * from './a';");
+  });
 
-  writeFileSync(join(testDir, 'src', 'components', 'forms', 'input.ts'), 'export const Input = 1;');
+  test('should handle nested directory structure', async () => {
+    mkdirSync(join(testDir, 'src', 'components', 'forms'), {recursive: true});
 
-  await generateBarrels(
-    testDir,
-    '.barrelize',
-    {
+    writeFileSync(join(testDir, 'src', 'components', 'forms', 'input.ts'), 'export const Input = 1;');
+
+    const config = $Config.decode({
       barrels: [
         {
           root: 'src',
@@ -199,21 +180,18 @@ test('should handle nested directory structure', async () => {
           include: ['**/*.ts'],
         },
       ],
-    },
-    true,
-  );
+    });
 
-  const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
-  expect(indexContent).toContain("export * from './components/forms/input';");
-});
+    await generateBarrels(testDir, '.barrelize', config, true);
 
-test('should handle empty directory', async () => {
-  mkdirSync(join(testDir, 'src'), {recursive: true});
+    const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
+    expect(indexContent).toContain("export * from './components/forms/input';");
+  });
 
-  await generateBarrels(
-    testDir,
-    '.barrelize',
-    {
+  test('should handle empty directory', async () => {
+    mkdirSync(join(testDir, 'src'), {recursive: true});
+
+    const config = $Config.decode({
       barrels: [
         {
           root: 'src',
@@ -221,26 +199,23 @@ test('should handle empty directory', async () => {
           include: ['**/*.ts'],
         },
       ],
-    },
-    true,
-  );
+    });
 
-  const indexPath = join(testDir, 'src', 'index.ts');
-  expect(existsSync(indexPath)).toBe(true);
+    await generateBarrels(testDir, '.barrelize', config, true);
 
-  const indexContent = readFileSync(indexPath, 'utf-8');
-  expect(indexContent.trim()).toBe('');
-});
+    const indexPath = join(testDir, 'src', 'index.ts');
+    expect(existsSync(indexPath)).toBe(true);
 
-test('should handle no matching files', async () => {
-  mkdirSync(join(testDir, 'src'), {recursive: true});
+    const indexContent = readFileSync(indexPath, 'utf-8');
+    expect(indexContent.trim()).toBe('');
+  });
 
-  writeFileSync(join(testDir, 'src', 'a.js'), 'export const a = 1;');
+  test('should handle no matching files', async () => {
+    mkdirSync(join(testDir, 'src'), {recursive: true});
 
-  await generateBarrels(
-    testDir,
-    '.barrelize',
-    {
+    writeFileSync(join(testDir, 'src', 'a.js'), 'export const a = 1;');
+
+    const config = $Config.decode({
       barrels: [
         {
           root: 'src',
@@ -248,24 +223,21 @@ test('should handle no matching files', async () => {
           include: ['**/*.ts'],
         },
       ],
-    },
-    true,
-  );
+    });
 
-  const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
-  expect(indexContent.trim()).toBe('');
-});
+    await generateBarrels(testDir, '.barrelize', config, true);
 
-test('should exclude index file from exports', async () => {
-  mkdirSync(join(testDir, 'src'), {recursive: true});
+    const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
+    expect(indexContent.trim()).toBe('');
+  });
 
-  writeFileSync(join(testDir, 'src', 'a.ts'), 'export const a = 1;');
-  writeFileSync(join(testDir, 'src', 'index.ts'), '');
+  test('should exclude index file from exports', async () => {
+    mkdirSync(join(testDir, 'src'), {recursive: true});
 
-  await generateBarrels(
-    testDir,
-    '.barrelize',
-    {
+    writeFileSync(join(testDir, 'src', 'a.ts'), 'export const a = 1;');
+    writeFileSync(join(testDir, 'src', 'index.ts'), '');
+
+    const config = $Config.decode({
       barrels: [
         {
           root: 'src',
@@ -273,26 +245,23 @@ test('should exclude index file from exports', async () => {
           include: ['**/*.ts'],
         },
       ],
-    },
-    true,
-  );
+    });
 
-  const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
-  expect(indexContent).toContain("export * from './a';");
-  expect(indexContent).not.toContain("export * from './index';");
-});
+    await generateBarrels(testDir, '.barrelize', config, true);
 
-test('should handle multiple include patterns', async () => {
-  mkdirSync(join(testDir, 'src'), {recursive: true});
+    const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
+    expect(indexContent).toContain("export * from './a';");
+    expect(indexContent).not.toContain("export * from './index';");
+  });
 
-  writeFileSync(join(testDir, 'src', 'component.tsx'), 'export const Component = () => {};');
-  writeFileSync(join(testDir, 'src', 'util.ts'), 'export const util = 1;');
-  writeFileSync(join(testDir, 'src', 'styles.css'), '.class {}');
+  test('should handle multiple include patterns', async () => {
+    mkdirSync(join(testDir, 'src'), {recursive: true});
 
-  await generateBarrels(
-    testDir,
-    '.barrelize',
-    {
+    writeFileSync(join(testDir, 'src', 'component.tsx'), 'export const Component = () => {};');
+    writeFileSync(join(testDir, 'src', 'util.ts'), 'export const util = 1;');
+    writeFileSync(join(testDir, 'src', 'styles.css'), '.class {}');
+
+    const config = $Config.decode({
       barrels: [
         {
           root: 'src',
@@ -300,23 +269,20 @@ test('should handle multiple include patterns', async () => {
           include: ['**/*.ts', '**/*.tsx'],
         },
       ],
-    },
-    true,
-  );
+    });
 
-  const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
-  expect(indexContent).toContain("export * from './component.tsx';");
-  expect(indexContent).toContain("export * from './util';");
-  expect(indexContent).not.toContain('styles');
-});
+    await generateBarrels(testDir, '.barrelize', config, true);
 
-test('should handle root at project level', async () => {
-  writeFileSync(join(testDir, 'a.ts'), 'export const a = 1;');
+    const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
+    expect(indexContent).toContain("export * from './component.tsx';");
+    expect(indexContent).toContain("export * from './util';");
+    expect(indexContent).not.toContain('styles');
+  });
 
-  await generateBarrels(
-    testDir,
-    '.barrelize',
-    {
+  test('should handle root at project level', async () => {
+    writeFileSync(join(testDir, 'a.ts'), 'export const a = 1;');
+
+    const config = $Config.decode({
       barrels: [
         {
           root: '.',
@@ -324,10 +290,11 @@ test('should handle root at project level', async () => {
           include: ['*.ts'],
         },
       ],
-    },
-    true,
-  );
+    });
 
-  const indexContent = readFileSync(join(testDir, 'index.ts'), 'utf-8');
-  expect(indexContent).toContain("export * from './a';");
+    await generateBarrels(testDir, '.barrelize', config, true);
+
+    const indexContent = readFileSync(join(testDir, 'index.ts'), 'utf-8');
+    expect(indexContent).toContain("export * from './a';");
+  });
 });

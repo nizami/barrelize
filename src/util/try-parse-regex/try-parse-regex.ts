@@ -31,7 +31,3 @@ export function tryParseRegex(s: string): RegExp | null {
     return null;
   }
 }
-
-export function rsTest(rs: RegExp | string, s: string): boolean {
-  return typeof rs === 'string' ? rs === s : rs.test(s);
-}

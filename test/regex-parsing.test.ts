@@ -1,5 +1,5 @@
 import {expect, test} from 'vitest';
-import {tryParseRegex} from '../src/regex/try-parse-regex';
+import {tryParseRegex} from '../src/util/try-parse-regex/try-parse-regex';
 
 test('should parse valid regex pattern', () => {
   const result = tryParseRegex('/test/');

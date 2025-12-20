@@ -132,7 +132,7 @@ Create a `.barrelize` file in your project root. The configuration file uses JSO
 
 ### Using Export Variables
 
-You can use variables in export aliases to dynamically name exports based on filenames or actual export names:
+You can use variables in export aliases to dynamically name exports based on file names or export names:
 
 ```jsonc
 {
@@ -143,7 +143,7 @@ You can use variables in export aliases to dynamically name exports based on fil
       "include": ["components/**/*.tsx"],
       "exports": {
         "components/**/*.tsx": [
-          "default as $filename" // Use filename
+          "default as @fileName" // Use file name
         ]
       }
     }
@@ -153,8 +153,8 @@ You can use variables in export aliases to dynamically name exports based on fil
 
 **Supported Variables:**
 
-- `$filename` - The filename without extension (e.g., "Button" from "Button.tsx")
-- `$exportName` - The actual name of the default export from the code
+- `@fileName` - The file name without extension (e.g., "Button" from "Button.tsx")
+- `@exportName` - The export name of the default export from the code
 
 **Examples:**
 
@@ -163,19 +163,19 @@ You can use variables in export aliases to dynamically name exports based on fil
 export default function ButtonComponent() {...}
 ```
 
-Using `"default as $filename"`:
+Using `"default as @fileName"`:
 
 ```typescript
 export {default as button} from './components/button';
 ```
 
-Using `"default as $exportName"`:
+Using `"default as @exportName"`:
 
 ```typescript
 export {default as ButtonComponent} from './components/button';
 ```
 
-Using both in one pattern `"default as $filename$exportName"`:
+Using both in one pattern `"default as @fileName@exportName"`:
 
 ```typescript
 export {default as buttonButtonComponent} from './components/button';
@@ -183,10 +183,10 @@ export {default as buttonButtonComponent} from './components/button';
 
 **Notes:**
 
-- Works with nested directory paths (e.g., `utils/parsers/json.ts` → filename is `json`)
-- Preserves dots in filenames (e.g., `my.component.tsx` → `my.component`)
-- `$exportName` works with function, class, and variable default exports
-- For anonymous default exports (arrow functions without a name), `$exportName` falls back to the member name ("default")
+- Works with nested directory paths (e.g., `utils/parsers/json.ts` → fileName is `json`)
+- Preserves dots in file names (e.g., `my.component.tsx` → `my.component`)
+- `@exportName` works with function, class, and variable default exports
+- For anonymous default exports (arrow functions without a name), `@exportName` falls back to the member name ("default")
 - Variables can be combined and used multiple times in the same alias
 - Works alongside other export patterns and with the `replace` config option
 

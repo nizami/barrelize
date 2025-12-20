@@ -20,4 +20,4 @@ export * from './generate/paths-differences';
 export * from './generate/watch-barrels';
 export * from './log/colorize';
 export * from './log/log';
-export * from './regex/try-parse-regex';
+export * from './util/try-parse-regex/try-parse-regex';

@@ -116,22 +116,18 @@
           },
           "bracketSpacing": {
             "description": "Use spaces between brackets in exports",
-            "default": true,
             "type": "boolean"
           },
           "singleQuote": {
             "description": "Use single quotes for exports",
-            "default": true,
             "type": "boolean"
           },
           "semi": {
             "description": "Add semicolons after exports",
-            "default": true,
             "type": "boolean"
           },
           "insertFinalNewline": {
             "description": "Add newline at end of file",
-            "default": true,
             "type": "boolean"
           }
         }

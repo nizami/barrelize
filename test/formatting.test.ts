@@ -1,6 +1,7 @@
+import {$Config} from '#lib';
 import {mkdirSync, readFileSync, rmSync, writeFileSync} from 'node:fs';
 import {join} from 'node:path';
-import {afterEach, beforeEach, expect, test} from 'vitest';
+import {afterEach, beforeEach, describe, expect, test} from 'vitest';
 import {generateBarrels} from '../src/generate/generate-barrels';
 
 const testDir = join(__dirname, 'test-fixtures', 'formatting');
@@ -13,15 +14,12 @@ afterEach(() => {
   rmSync(testDir, {recursive: true, force: true});
 });
 
-test('should use bracket spacing by default', async () => {
-  mkdirSync(join(testDir, 'src'), {recursive: true});
+describe('ordering', () => {
+  test('should use bracket spacing by default', async () => {
+    mkdirSync(join(testDir, 'src'), {recursive: true});
+    writeFileSync(join(testDir, 'src', 'utils.ts'), 'export const foo = 1;');
 
-  writeFileSync(join(testDir, 'src', 'utils.ts'), 'export const foo = 1;');
-
-  await generateBarrels(
-    testDir,
-    '.barrelize',
-    {
+    const config = $Config.decode({
       barrels: [
         {
           root: 'src',
@@ -32,23 +30,18 @@ test('should use bracket spacing by default', async () => {
           },
         },
       ],
-    },
-    true,
-  );
+    });
+    await generateBarrels(testDir, '.barrelize', config, true);
 
-  const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
-  expect(indexContent).toContain('export { foo } from');
-});
+    const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
+    expect(indexContent).toContain('export { foo } from');
+  });
 
-test('should disable bracket spacing', async () => {
-  mkdirSync(join(testDir, 'src'), {recursive: true});
+  test('should disable bracket spacing', async () => {
+    mkdirSync(join(testDir, 'src'), {recursive: true});
+    writeFileSync(join(testDir, 'src', 'utils.ts'), 'export const foo = 1;');
 
-  writeFileSync(join(testDir, 'src', 'utils.ts'), 'export const foo = 1;');
-
-  await generateBarrels(
-    testDir,
-    '.barrelize',
-    {
+    const config = $Config.decode({
       bracketSpacing: false,
       barrels: [
         {
@@ -60,23 +53,19 @@ test('should disable bracket spacing', async () => {
           },
         },
       ],
-    },
-    true,
-  );
+    });
 
-  const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
-  expect(indexContent).toContain('export {foo} from');
-});
+    await generateBarrels(testDir, '.barrelize', config, true);
 
-test('should use single quotes by default', async () => {
-  mkdirSync(join(testDir, 'src'), {recursive: true});
+    const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
+    expect(indexContent).toContain('export {foo} from');
+  });
 
-  writeFileSync(join(testDir, 'src', 'utils.ts'), 'export const foo = 1;');
+  test('should use single quotes by default', async () => {
+    mkdirSync(join(testDir, 'src'), {recursive: true});
+    writeFileSync(join(testDir, 'src', 'utils.ts'), 'export const foo = 1;');
 
-  await generateBarrels(
-    testDir,
-    '.barrelize',
-    {
+    const config = $Config.decode({
       barrels: [
         {
           root: 'src',
@@ -84,23 +73,15 @@ test('should use single quotes by default', async () => {
           include: ['**/*.ts'],
         },
       ],
-    },
-    true,
-  );
+    });
+    await generateBarrels(testDir, '.barrelize', config, true);
+  });
 
-  const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
-  expect(indexContent).toContain("from './utils'");
-});
+  test('should use double quotes', async () => {
+    mkdirSync(join(testDir, 'src'), {recursive: true});
+    writeFileSync(join(testDir, 'src', 'utils.ts'), 'export const foo = 1;');
 
-test('should use double quotes', async () => {
-  mkdirSync(join(testDir, 'src'), {recursive: true});
-
-  writeFileSync(join(testDir, 'src', 'utils.ts'), 'export const foo = 1;');
-
-  await generateBarrels(
-    testDir,
-    '.barrelize',
-    {
+    const config = $Config.decode({
       singleQuote: false,
       barrels: [
         {
@@ -109,23 +90,18 @@ test('should use double quotes', async () => {
           include: ['**/*.ts'],
         },
       ],
-    },
-    true,
-  );
+    });
+    await generateBarrels(testDir, '.barrelize', config, true);
 
-  const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
-  expect(indexContent).toContain('from "./utils"');
-});
+    const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
+    expect(indexContent).toContain('from "./utils"');
+  });
 
-test('should use semicolons by default', async () => {
-  mkdirSync(join(testDir, 'src'), {recursive: true});
+  test('should use semicolons by default', async () => {
+    mkdirSync(join(testDir, 'src'), {recursive: true});
+    writeFileSync(join(testDir, 'src', 'utils.ts'), 'export const foo = 1;');
 
-  writeFileSync(join(testDir, 'src', 'utils.ts'), 'export const foo = 1;');
-
-  await generateBarrels(
-    testDir,
-    '.barrelize',
-    {
+    const config = $Config.decode({
       barrels: [
         {
           root: 'src',
@@ -133,23 +109,15 @@ test('should use semicolons by default', async () => {
           include: ['**/*.ts'],
         },
       ],
-    },
-    true,
-  );
+    });
+    await generateBarrels(testDir, '.barrelize', config, true);
+  });
 
-  const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
-  expect(indexContent).toContain("from './utils';");
-});
+  test('should disable semicolons', async () => {
+    mkdirSync(join(testDir, 'src'), {recursive: true});
+    writeFileSync(join(testDir, 'src', 'utils.ts'), 'export const foo = 1;');
 
-test('should disable semicolons', async () => {
-  mkdirSync(join(testDir, 'src'), {recursive: true});
-
-  writeFileSync(join(testDir, 'src', 'utils.ts'), 'export const foo = 1;');
-
-  await generateBarrels(
-    testDir,
-    '.barrelize',
-    {
+    const config = $Config.decode({
       semi: false,
       barrels: [
         {
@@ -158,24 +126,19 @@ test('should disable semicolons', async () => {
           include: ['**/*.ts'],
         },
       ],
-    },
-    true,
-  );
+    });
+    await generateBarrels(testDir, '.barrelize', config, true);
 
-  const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
-  expect(indexContent).not.toContain(';');
-  expect(indexContent).toContain("from './utils'");
-});
+    const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
+    expect(indexContent).not.toContain(';');
+    expect(indexContent).toContain("from './utils'");
+  });
 
-test('should add final newline by default', async () => {
-  mkdirSync(join(testDir, 'src'), {recursive: true});
+  test('should add final newline by default', async () => {
+    mkdirSync(join(testDir, 'src'), {recursive: true});
+    writeFileSync(join(testDir, 'src', 'utils.ts'), 'export const foo = 1;');
 
-  writeFileSync(join(testDir, 'src', 'utils.ts'), 'export const foo = 1;');
-
-  await generateBarrels(
-    testDir,
-    '.barrelize',
-    {
+    const config = $Config.decode({
       barrels: [
         {
           root: 'src',
@@ -183,23 +146,15 @@ test('should add final newline by default', async () => {
           include: ['**/*.ts'],
         },
       ],
-    },
-    true,
-  );
+    });
+    await generateBarrels(testDir, '.barrelize', config, true);
+  });
 
-  const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
-  expect(indexContent.endsWith('\n')).toBe(true);
-});
+  test('should disable final newline', async () => {
+    mkdirSync(join(testDir, 'src'), {recursive: true});
+    writeFileSync(join(testDir, 'src', 'utils.ts'), 'export const foo = 1;');
 
-test('should disable final newline', async () => {
-  mkdirSync(join(testDir, 'src'), {recursive: true});
-
-  writeFileSync(join(testDir, 'src', 'utils.ts'), 'export const foo = 1;');
-
-  await generateBarrels(
-    testDir,
-    '.barrelize',
-    {
+    const config = $Config.decode({
       insertFinalNewline: false,
       barrels: [
         {
@@ -208,25 +163,20 @@ test('should disable final newline', async () => {
           include: ['**/*.ts'],
         },
       ],
-    },
-    true,
-  );
+    });
+    await generateBarrels(testDir, '.barrelize', config, true);
 
-  const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
-  expect(indexContent.endsWith('\n')).toBe(false);
-});
+    const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
+    expect(indexContent.endsWith('\n')).toBe(false);
+  });
 
-test('should override global formatting per barrel', async () => {
-  mkdirSync(join(testDir, 'src'), {recursive: true});
-  mkdirSync(join(testDir, 'lib'), {recursive: true});
+  test('should override global formatting per barrel', async () => {
+    mkdirSync(join(testDir, 'src'), {recursive: true});
+    mkdirSync(join(testDir, 'lib'), {recursive: true});
+    writeFileSync(join(testDir, 'src', 'utils.ts'), 'export const foo = 1;');
+    writeFileSync(join(testDir, 'lib', 'helper.ts'), 'export const bar = 2;');
 
-  writeFileSync(join(testDir, 'src', 'utils.ts'), 'export const foo = 1;');
-  writeFileSync(join(testDir, 'lib', 'helper.ts'), 'export const bar = 2;');
-
-  await generateBarrels(
-    testDir,
-    '.barrelize',
-    {
+    const config = $Config.decode({
       singleQuote: true,
       semi: true,
       barrels: [
@@ -243,27 +193,22 @@ test('should override global formatting per barrel', async () => {
           semi: false,
         },
       ],
-    },
-    true,
-  );
+    });
+    await generateBarrels(testDir, '.barrelize', config, true);
 
-  const srcContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
-  expect(srcContent).toContain("from './utils';");
+    const srcContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
+    expect(srcContent).toContain("from './utils';");
 
-  const libContent = readFileSync(join(testDir, 'lib', 'index.ts'), 'utf-8');
-  expect(libContent).toContain('from "./helper"');
-  expect(libContent).not.toContain(';');
-});
+    const libContent = readFileSync(join(testDir, 'lib', 'index.ts'), 'utf-8');
+    expect(libContent).toContain('from "./helper"');
+    expect(libContent).not.toContain(';');
+  });
 
-test('should combine all formatting options', async () => {
-  mkdirSync(join(testDir, 'src'), {recursive: true});
+  test('should combine all formatting options', async () => {
+    mkdirSync(join(testDir, 'src'), {recursive: true});
+    writeFileSync(join(testDir, 'src', 'utils.ts'), 'export const foo = 1;');
 
-  writeFileSync(join(testDir, 'src', 'utils.ts'), 'export const foo = 1;');
-
-  await generateBarrels(
-    testDir,
-    '.barrelize',
-    {
+    const config = $Config.decode({
       bracketSpacing: false,
       singleQuote: false,
       semi: false,
@@ -278,27 +223,22 @@ test('should combine all formatting options', async () => {
           },
         },
       ],
-    },
-    true,
-  );
+    });
+    await generateBarrels(testDir, '.barrelize', config, true);
 
-  const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
-  expect(indexContent).toBe('export {foo} from "./utils"');
-});
+    const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
+    expect(indexContent).toBe('export {foo} from "./utils"');
+  });
 
-test('should apply formatting to named exports', async () => {
-  mkdirSync(join(testDir, 'src'), {recursive: true});
-
-  writeFileSync(
-    join(testDir, 'src', 'utils.ts'),
-    `export const foo = 1;
+  test('should apply formatting to named exports', async () => {
+    mkdirSync(join(testDir, 'src'), {recursive: true});
+    writeFileSync(
+      join(testDir, 'src', 'utils.ts'),
+      `export const foo = 1;
 export const bar = 2;`,
-  );
+    );
 
-  await generateBarrels(
-    testDir,
-    '.barrelize',
-    {
+    const config = $Config.decode({
       bracketSpacing: true,
       singleQuote: true,
       semi: true,
@@ -312,23 +252,18 @@ export const bar = 2;`,
           },
         },
       ],
-    },
-    true,
-  );
+    });
+    await generateBarrels(testDir, '.barrelize', config, true);
 
-  const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
-  expect(indexContent).toContain("export { foo, bar } from './utils';");
-});
+    const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
+    expect(indexContent).toContain("export { foo, bar } from './utils';");
+  });
 
-test('should apply formatting to wildcard exports', async () => {
-  mkdirSync(join(testDir, 'src'), {recursive: true});
+  test('should apply formatting to wildcard exports', async () => {
+    mkdirSync(join(testDir, 'src'), {recursive: true});
+    writeFileSync(join(testDir, 'src', 'utils.ts'), 'export const foo = 1;');
 
-  writeFileSync(join(testDir, 'src', 'utils.ts'), 'export const foo = 1;');
-
-  await generateBarrels(
-    testDir,
-    '.barrelize',
-    {
+    const config = $Config.decode({
       singleQuote: false,
       semi: false,
       barrels: [
@@ -338,23 +273,18 @@ test('should apply formatting to wildcard exports', async () => {
           include: ['**/*.ts'],
         },
       ],
-    },
-    true,
-  );
+    });
+    await generateBarrels(testDir, '.barrelize', config, true);
 
-  const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
-  expect(indexContent).toContain('export * from "./utils"');
-});
+    const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
+    expect(indexContent).toContain('export * from "./utils"');
+  });
 
-test('should apply formatting to namespace exports', async () => {
-  mkdirSync(join(testDir, 'src'), {recursive: true});
+  test('should apply formatting to namespace exports', async () => {
+    mkdirSync(join(testDir, 'src'), {recursive: true});
+    writeFileSync(join(testDir, 'src', 'utils.ts'), 'export const foo = 1;');
 
-  writeFileSync(join(testDir, 'src', 'utils.ts'), 'export const foo = 1;');
-
-  await generateBarrels(
-    testDir,
-    '.barrelize',
-    {
+    const config = $Config.decode({
       singleQuote: false,
       semi: true,
       barrels: [
@@ -367,23 +297,18 @@ test('should apply formatting to namespace exports', async () => {
           },
         },
       ],
-    },
-    true,
-  );
+    });
+    await generateBarrels(testDir, '.barrelize', config, true);
 
-  const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
-  expect(indexContent).toContain('export * as utils from "./utils";');
-});
+    const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
+    expect(indexContent).toContain('export * as utils from "./utils";');
+  });
 
-test('should handle barrel-specific bracket spacing', async () => {
-  mkdirSync(join(testDir, 'src'), {recursive: true});
+  test('should handle barrel-specific bracket spacing', async () => {
+    mkdirSync(join(testDir, 'src'), {recursive: true});
+    writeFileSync(join(testDir, 'src', 'utils.ts'), 'export const foo = 1;');
 
-  writeFileSync(join(testDir, 'src', 'utils.ts'), 'export const foo = 1;');
-
-  await generateBarrels(
-    testDir,
-    '.barrelize',
-    {
+    const config = $Config.decode({
       barrels: [
         {
           root: 'src',
@@ -395,28 +320,23 @@ test('should handle barrel-specific bracket spacing', async () => {
           },
         },
       ],
-    },
-    true,
-  );
+    });
+    await generateBarrels(testDir, '.barrelize', config, true);
 
-  const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
-  expect(indexContent).toContain('export {foo} from');
-});
+    const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
+    expect(indexContent).toContain('export {foo} from');
+  });
 
-test('should handle multiple exports with formatting', async () => {
-  mkdirSync(join(testDir, 'src'), {recursive: true});
-
-  writeFileSync(
-    join(testDir, 'src', 'utils.ts'),
-    `export const a = 1;
+  test('should handle multiple exports with formatting', async () => {
+    mkdirSync(join(testDir, 'src'), {recursive: true});
+    writeFileSync(
+      join(testDir, 'src', 'utils.ts'),
+      `export const a = 1;
 export const b = 2;
 export const c = 3;`,
-  );
+    );
 
-  await generateBarrels(
-    testDir,
-    '.barrelize',
-    {
+    const config = $Config.decode({
       bracketSpacing: true,
       singleQuote: true,
       semi: true,
@@ -430,10 +350,10 @@ export const c = 3;`,
           },
         },
       ],
-    },
-    true,
-  );
+    });
+    await generateBarrels(testDir, '.barrelize', config, true);
 
-  const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
-  expect(indexContent).toContain("export { a, b, c } from './utils';");
+    const indexContent = readFileSync(join(testDir, 'src', 'index.ts'), 'utf-8');
+    expect(indexContent).toContain("export { a, b, c } from './utils';");
+  });
 });
