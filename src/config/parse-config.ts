@@ -1,12 +1,17 @@
-import {Config, logError} from '#lib';
+import {$Config, Config} from '#lib';
 import JSON5 from 'json5';
-import {readFileSync} from 'node:fs';
+import {readFileSync, statSync} from 'node:fs';
+import z from 'zod';
 
-export function parseConfig(configPath: string): Config | null {
-  const configJson = readFileSync(configPath).toString();
-
+export function parseConfig(configPath: string): Config {
   try {
-    return JSON5.parse(configJson);
+    if (!statSync(configPath).isFile()) {
+      throw new Error(`Couldn't find barrelize config file path: '${configPath}'`);
+    }
+
+    const configJson = readFileSync(configPath).toString();
+
+    return $Config.parse(JSON5.parse(configJson));
   } catch (error: unknown) {
     if (error instanceof SyntaxError) {
       const referenceMatches = error.message.match(/at (\d+:\d+)/);
@@ -15,14 +20,15 @@ export function parseConfig(configPath: string): Config | null {
       if (referenceMatches && reasonMatches) {
         const reference = `${configPath}:${referenceMatches[1]}`;
         const reason = reasonMatches[0];
-        logError(`Barrelize json config syntax error: ${reason} at ${reference}:`);
 
-        return null;
+        throw new Error(`Barrelize json config syntax error: ${reason} at ${reference}:`);
       }
     }
 
-    console.error(error);
+    if (error instanceof z.ZodError) {
+      throw new Error(`Invalid barrelize config:\n` + z.prettifyError(error));
+    }
 
-    return null;
+    throw error;
   }
 }

@@ -1,4 +1,4 @@
-import {BarrelConfig, colorize, Config, DEFAULT_CONFIG, generateBarrels, TerminalColor} from '#lib';
+import {BarrelConfig, colorize, Config, generateBarrels, TerminalColor} from '#lib';
 import {watch} from 'chokidar';
 import {resolve} from 'node:path';
 
@@ -17,5 +17,5 @@ export async function watchBarrels(configDir: string, configPath: string, config
 }
 
 function getWatchDirectories(configDir: string, barrels: BarrelConfig[]): string[] {
-  return barrels.map((barrelConfig) => resolve(configDir, barrelConfig.root ?? DEFAULT_CONFIG.root));
+  return barrels.map((barrelConfig) => resolve(configDir, barrelConfig.root));
 }

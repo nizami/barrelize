@@ -1,165 +1,141 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "$ref": "#/definitions/Config",
-  "definitions": {
-    "Config": {
-      "type": "object",
-      "properties": {
-        "$schema": {
-          "type": "string",
-          "description": "Path to the JSON schema file that will be used for configuration validation",
-          "markdownDescription": "Path to the JSON schema file that will be used for configuration validation",
-          "default": "undefined"
-        },
-        "bracketSpacing": {
-          "type": "boolean",
-          "description": "Whether to add spaces between brackets in export statements",
-          "markdownDescription": "Whether to add spaces between brackets in export statements",
-          "default": true
-        },
-        "singleQuote": {
-          "type": "boolean",
-          "description": "Whether to use single quotes instead of double quotes for exports",
-          "markdownDescription": "Whether to use single quotes instead of double quotes for exports",
-          "default": true
-        },
-        "semi": {
-          "type": "boolean",
-          "description": "Whether to append semicolons to export statements",
-          "markdownDescription": "Whether to append semicolons to export statements",
-          "default": true
-        },
-        "insertFinalNewline": {
-          "type": "boolean",
-          "description": "Whether to append a newline character at the end of generated files",
-          "markdownDescription": "Whether to append a newline character at the end of generated files",
-          "default": true
-        },
-        "barrels": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/BarrelConfig"
-          },
-          "description": "List of barrel configurations",
-          "markdownDescription": "List of barrel configurations",
-          "default": [
-            {
-              "root": "src",
-              "name": "index.ts",
-              "include": [
-                "**/*.ts"
-              ],
-              "exclude": [
-                "**/*.test.ts"
-              ]
-            }
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "description": "Path to the JSON schema file that will be used for configuration validation",
+      "default": "node_modules/barrelize/schema.json",
+      "type": "string"
+    },
+    "bracketSpacing": {
+      "description": "Whether to add spaces between brackets in export statements",
+      "default": true,
+      "type": "boolean"
+    },
+    "singleQuote": {
+      "description": "Whether to use single quotes instead of double quotes for exports",
+      "default": true,
+      "type": "boolean"
+    },
+    "semi": {
+      "description": "Whether to append semicolons to export statements",
+      "default": true,
+      "type": "boolean"
+    },
+    "insertFinalNewline": {
+      "description": "Whether to append a newline character at the end of generated files",
+      "default": true,
+      "type": "boolean"
+    },
+    "barrels": {
+      "description": "List of barrel configurations",
+      "default": [
+        {
+          "root": "src",
+          "name": "index.ts",
+          "include": [
+            "**/*.ts"
+          ],
+          "exclude": [
+            "**/*.test.ts"
           ]
         }
-      },
-      "required": [
-        "barrels"
       ],
-      "additionalProperties": false
-    },
-    "BarrelConfig": {
-      "type": "object",
-      "properties": {
-        "root": {
-          "type": "string",
-          "description": "Root directory to start from (support glob pattern)",
-          "markdownDescription": "Root directory to start from (support glob pattern)",
-          "default": ""
-        },
-        "name": {
-          "type": "string",
-          "description": "Name of the index file (e.g. index.ts or some/path/index.ts)",
-          "markdownDescription": "Name of the index file (e.g. index.ts or some/path/index.ts)",
-          "default": "index.ts"
-        },
-        "include": {
-          "type": "array",
-          "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "root": {
+            "description": "Root directory to start from (support glob pattern)",
+            "default": "src",
             "type": "string"
           },
-          "description": "Files to include in the barrel (supports glob patterns)",
-          "markdownDescription": "Files to include in the barrel (supports glob patterns)",
-          "default": [
-            "**/*.ts"
-          ]
-        },
-        "exclude": {
-          "type": "array",
-          "items": {
+          "name": {
+            "description": "Name of the index file (e.g. index.ts or some/path/index.ts)",
+            "default": "index.ts",
             "type": "string"
           },
-          "description": "Files to exclude from the barrel (supports glob patterns)",
-          "markdownDescription": "Files to exclude from the barrel (supports glob patterns)",
-          "default": []
-        },
-        "order": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "description": "Ordering of exports",
-          "markdownDescription": "Ordering of exports",
-          "default": []
-        },
-        "replace": {
-          "type": "object",
-          "additionalProperties": {
-            "type": "string",
-            "description": "String or regular expression pattern to find in export paths (e.g. \"\\\\.ts$\", \"my-custom-export-path.ts\")",
-            "markdownDescription": "String or regular expression pattern to find in export paths (e.g. \"\\\\.ts$\", \"my-custom-export-path.ts\")"
-          },
-          "description": "String or regular expression patterns to find and replace in export paths (e.g. {\"\\\\.ts$\": \"\", \"my-custom-export-path.ts\": \"my-path.ts\"})",
-          "markdownDescription": "String or regular expression patterns to find and replace in export paths (e.g. {\"\\\\.ts$\": \"\", \"my-custom-export-path.ts\": \"my-path.ts\"})",
-          "default": {
-            "/\\.ts$/": ""
-          }
-        },
-        "exports": {
-          "type": "object",
-          "additionalProperties": {
+          "include": {
+            "description": "Files to include in the barrel (supports glob patterns)",
+            "default": [
+              "**/*.ts"
+            ],
             "type": "array",
             "items": {
               "type": "string"
-            },
-            "description": "Glob pattern exports file with string or regular expression patterns (e.g. \"**\\/*service.ts\": [\"* as lib\", \"/(.+)Config$/ as $1LibConfig\", \"util\"])",
-            "markdownDescription": "Glob pattern exports file with string or regular expression patterns\n(e.g. \"**\\/*service.ts\": [\"* as lib\", \"/(.+)Config$/ as $1LibConfig\", \"util\"])"
+            }
           },
-          "description": "Configuration for exports in barrel files",
-          "markdownDescription": "Configuration for exports in barrel files",
-          "default": {
-            "**/*.ts": []
+          "exclude": {
+            "description": "Files to exclude from the barrel (supports glob patterns)",
+            "default": [
+              "**/*.test.ts"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "order": {
+            "description": "Ordering of exports",
+            "default": [],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "replace": {
+            "description": "String or regular expression patterns to find and replace in export paths (e.g. {\"\\.ts$\": \"\", \"my-custom-export-path.ts\": \"my-path.ts\"})",
+            "default": {
+              "/\\.ts$/": ""
+            },
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {
+              "description": "String or regular expression pattern to find in export paths (e.g. \"\\.ts$\", \"my-custom-export-path.ts\")",
+              "type": "string"
+            }
+          },
+          "exports": {
+            "description": "Configuration for exports in barrel files",
+            "default": {
+              "**/*.ts": []
+            },
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {
+              "description": "Glob pattern exports file with string or regular expression patterns (e.g. \"**/*service.ts\": [\"* as lib\", \"/(.+)Config$/ as $1LibConfig\", \"util\"])",
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "bracketSpacing": {
+            "description": "Use spaces between brackets in exports",
+            "default": true,
+            "type": "boolean"
+          },
+          "singleQuote": {
+            "description": "Use single quotes for exports",
+            "default": true,
+            "type": "boolean"
+          },
+          "semi": {
+            "description": "Add semicolons after exports",
+            "default": true,
+            "type": "boolean"
+          },
+          "insertFinalNewline": {
+            "description": "Add newline at end of file",
+            "default": true,
+            "type": "boolean"
           }
-        },
-        "bracketSpacing": {
-          "type": "boolean",
-          "description": "Use spaces between brackets in exports",
-          "markdownDescription": "Use spaces between brackets in exports",
-          "default": true
-        },
-        "singleQuote": {
-          "type": "boolean",
-          "description": "Use single quotes for exports",
-          "markdownDescription": "Use single quotes for exports",
-          "default": true
-        },
-        "semi": {
-          "type": "boolean",
-          "description": "Add semicolons after exports",
-          "markdownDescription": "Add semicolons after exports",
-          "default": true
-        },
-        "insertFinalNewline": {
-          "type": "boolean",
-          "description": "Add newline at end of file",
-          "markdownDescription": "Add newline at end of file",
-          "default": true
         }
-      },
-      "additionalProperties": false
+      }
     }
   }
 }

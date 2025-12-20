@@ -1,6 +1,5 @@
 import {
   BarrelConfig,
-  DEFAULT_CONFIG,
   ExportPathInfo,
   globPaths,
   handlePathExports,
@@ -10,8 +9,7 @@ import {
 import {resolve} from 'node:path';
 
 export async function handlePaths(configDir: string, barrelConfig: BarrelConfig): Promise<ExportPathInfo[]> {
-  const rootDir = resolve(configDir, barrelConfig.root ?? DEFAULT_CONFIG.root);
-
+  const rootDir = resolve(configDir, barrelConfig.root);
   const paths = await globPaths(rootDir, barrelConfig);
   const exportPaths: ExportPathInfo[] = paths.map((x) => ({originalPath: x, modifiedPath: x}));
 

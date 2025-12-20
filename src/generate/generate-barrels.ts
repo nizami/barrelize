@@ -1,7 +1,6 @@
 import {
   colorize,
   Config,
-  DEFAULT_CONFIG,
   formatExportLine,
   getExportedPathsFromContent,
   handlePaths,
@@ -22,8 +21,8 @@ export async function generateBarrels(
   silentIgnore = false,
 ): Promise<void> {
   for (const barrelConfig of config.barrels) {
-    const indexFileBasePath = barrelConfig.name ?? DEFAULT_CONFIG.name;
-    const indexFileRelativePath = join(barrelConfig.root ?? DEFAULT_CONFIG.root, indexFileBasePath);
+    const indexFileBasePath = barrelConfig.name ;
+    const indexFileRelativePath = join(barrelConfig.root , indexFileBasePath);
     const indexFileAbsolutePath = resolve(configDir, indexFileRelativePath);
     const indexDirectory = dirname(indexFileAbsolutePath);
 
@@ -36,7 +35,7 @@ export async function generateBarrels(
 
     const newExportPaths = await handlePaths(configDir, barrelConfig);
     const insertFinalNewline =
-      barrelConfig.insertFinalNewline ?? config.insertFinalNewline ?? DEFAULT_CONFIG.insertFinalNewline;
+      barrelConfig.insertFinalNewline ?? config.insertFinalNewline;
 
     let newContent = newExportPaths.map((x) => formatExportLine(x, config, barrelConfig)).join('\n');
 

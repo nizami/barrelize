@@ -5,12 +5,8 @@
       "root": "src",
       "name": "index.ts",
       "include": ["**/*.ts"],
-      "exclude": ["**/*.test.ts", "schema/**"],
-      "order": ["cli", "log"],
-      "bracketSpacing": false,
-      "replace": {
-        "/\\.ts$/": ""
-      }
+      "exclude": ["**/*.test.ts"],
+      "bracketSpacing": false
     }
   ]
 }

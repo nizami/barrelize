@@ -1,7 +1,5 @@
-import typia from '@ryoppippi/unplugin-typia/vite';
 import {resolve} from 'node:path';
-import dts from 'vite-plugin-dts';
-import {defineConfig} from 'vitest/config';
+import {defineConfig} from 'vite';
 
 const WORKSPACE_ROOT = resolve(import.meta.dirname);
 
@@ -30,12 +28,12 @@ export default defineConfig({
       external: [
         'vite',
         'vitest',
-        'typia',
         'fs',
         'fs/promises',
         'events',
         'node:util',
         'node:fs',
+        'node:os',
         'path',
         'node:path',
         'node:url',
@@ -47,8 +45,4 @@ export default defineConfig({
       ],
     },
   },
-  test: {
-    cache: false,
-  },
-  plugins: [typia({log: false}), dts()],
 });

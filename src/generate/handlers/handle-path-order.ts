@@ -1,10 +1,8 @@
-import {BarrelConfig, DEFAULT_CONFIG, ExportPathInfo} from '#lib';
+import {BarrelConfig, ExportPathInfo} from '#lib';
 
 export async function handlePathOrder(config: BarrelConfig, paths: ExportPathInfo[]): Promise<void> {
-  const orders = config.order ?? DEFAULT_CONFIG.order;
-
-  if (orders.length) {
-    paths.sort((a, b) => pathCompare(config.order!, a.originalPath, b.originalPath));
+  if (config.order.length > 0) {
+    paths.sort((a, b) => pathCompare(config.order, a.originalPath, b.originalPath));
 
     return;
   }

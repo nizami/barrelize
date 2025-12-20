@@ -26,11 +26,6 @@
     "paths": {
       "#lib": ["src/*", "src/index"]
     },
-    "plugins": [
-      {
-        "transform": "typia/lib/transform"
-      }
-    ],
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "sourceMap": true,

@@ -1,45 +1,48 @@
-import {BarrelConfig} from '#lib';
-import {createValidateEquals} from 'typia';
+import {$BarrelConfig} from '#lib';
+import {z} from 'zod';
 
-export type Config = {
-  /**
-   * Path to the JSON schema file that will be used for configuration validation
-   * @default undefined
-   */
-  $schema?: string;
-  /**
-   * Whether to add spaces between brackets in export statements
-   * @default true
-   */
-  bracketSpacing?: boolean;
-  /**
-   * Whether to use single quotes instead of double quotes for exports
-   * @default true
-   */
-  singleQuote?: boolean;
-  /**
-   * Whether to append semicolons to export statements
-   * @default true
-   */
-  semi?: boolean;
-  /**
-   * Whether to append a newline character at the end of generated files
-   * @default true
-   */
-  insertFinalNewline?: boolean;
-  /**
-   * List of barrel configurations
-   * @default [{
-   *   root: 'src',
-   *   name: 'index.ts',
-   *   include: ['**\/*.ts'],
-   *   exclude: ['**\/*.test.ts'],
-   * }]
-   */
-  barrels: BarrelConfig[];
-};
+export const $Config = z.object({
+  $schema: z
+    .string()
+    .optional()
+    .default('node_modules/barrelize/schema.json')
+    .describe('Path to the JSON schema file that will be used for configuration validation'),
 
-export const INITIAL_CONFIG: Config = {
+  bracketSpacing: z
+    .boolean()
+    .optional()
+    .default(true)
+    .describe('Whether to add spaces between brackets in export statements'),
+
+  singleQuote: z
+    .boolean()
+    .default(true)
+    .describe('Whether to use single quotes instead of double quotes for exports'),
+
+  semi: z.boolean().optional().default(true).describe('Whether to append semicolons to export statements'),
+
+  insertFinalNewline: z
+    .boolean()
+    .optional()
+    .default(true)
+    .describe('Whether to append a newline character at the end of generated files'),
+
+  barrels: $BarrelConfig
+    .array()
+    .prefault([
+      {
+        root: 'src',
+        name: 'index.ts',
+        include: ['**/*.ts'],
+        exclude: ['**/*.test.ts'],
+      },
+    ])
+    .describe('List of barrel configurations'),
+});
+
+export type Config = z.infer<typeof $Config>;
+
+export const INITIAL_CONFIG: z.input<typeof $Config> = {
   $schema: 'node_modules/barrelize/schema.json',
   barrels: [
     {
@@ -50,19 +53,3 @@ export const INITIAL_CONFIG: Config = {
     },
   ],
 };
-
-export const DEFAULT_CONFIG: Required<BarrelConfig> = {
-  root: '',
-  include: ['**/*.ts'],
-  exclude: [],
-  order: [],
-  name: 'index.ts',
-  replace: {'/\\.ts$/': ''},
-  exports: {},
-  bracketSpacing: true,
-  singleQuote: true,
-  semi: true,
-  insertFinalNewline: true,
-};
-
-export const validateConfig = createValidateEquals<Config>();

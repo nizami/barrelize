@@ -1,7 +1,7 @@
-import {BarrelConfig, DEFAULT_CONFIG, ExportPathInfo, tryParseRegex} from '#lib';
+import {BarrelConfig, ExportPathInfo, tryParseRegex} from '#lib';
 
 export async function handlePathReplace(config: BarrelConfig, paths: ExportPathInfo[]): Promise<void> {
-  const replace = replacePathFn(config.replace ?? DEFAULT_CONFIG.replace);
+  const replace = replacePathFn(config.replace);
   paths.forEach((x) => (x.modifiedPath = replace(x.originalPath)));
 }
 

@@ -1,10 +1,10 @@
-import {BarrelConfig, DEFAULT_CONFIG} from '#lib';
+import {BarrelConfig} from '#lib';
 import {glob} from 'glob';
 
 export async function globPaths(rootDir: string, barrelConfig: BarrelConfig): Promise<string[]> {
-  const ignore = [...(barrelConfig.exclude ?? DEFAULT_CONFIG.exclude), '**/index.ts', '**/index.js'];
+  const ignore = [...barrelConfig.exclude, '**/index.ts', '**/index.js'];
 
-  let paths = await glob(barrelConfig.include ?? DEFAULT_CONFIG.include, {
+  let paths = await glob(barrelConfig.include, {
     cwd: rootDir,
     ignore,
     nodir: true,

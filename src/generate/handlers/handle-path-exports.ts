@@ -1,15 +1,33 @@
-import {BarrelConfig, DEFAULT_CONFIG, ExportInfo, ExportPathInfo, extractExports, tryParseRegex} from '#lib';
+import {
+  $BarrelConfig,
+  BarrelConfig,
+  ExportInfo,
+  ExportPathInfo,
+  extractExports,
+  logError,
+  tryParseRegex,
+} from '#lib';
 import {glob} from 'glob';
 import {resolve} from 'node:path';
+import z from 'zod';
 
 export async function handlePathExports(
   rootDir: string,
   barrelConfig: BarrelConfig,
   exportPaths: ExportPathInfo[],
 ): Promise<void> {
-  const configExports = barrelConfig.exports ?? DEFAULT_CONFIG.exports;
+  const configExports = $BarrelConfig.shape.exports.safeParse(barrelConfig.exports);
 
-  for (const [globPattern, exportMembers] of Object.entries(configExports)) {
+  if (configExports.error) {
+    logError(z.prettifyError(configExports.error));
+    return;
+  }
+
+  if (!configExports.data) {
+    return;
+  }
+
+  for (const [globPattern, exportMembers] of Object.entries(configExports.data)) {
     if (!exportMembers.length) {
       continue;
     }

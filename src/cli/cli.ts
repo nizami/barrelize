@@ -6,20 +6,18 @@ export function cliInit(): void {
   const cli = cac(name);
 
   cli
-    .command('[config path]', `Generate barrel files`)
+    .command('[config path]', 'Generate barrel files')
     .option('-w, --watch', 'Watch for changes and regenerate barrel files automatically')
-    .action((configPath: string, options: {watch: boolean}) => {
-      runGenerateCommand({configPath: configPath || '.barrelize', watch: !!options.watch});
-    });
+    .action((configPath: string, options: {watch: boolean}) =>
+      runGenerateCommand({configPath: configPath || '.barrelize', watch: !!options.watch}).catch(logError),
+    );
 
   cli
     .command('init [config path]', 'Create .barrelize config file if does not exist')
     .example('barrelize init')
     .example('barrelize init .barrelize')
     .example('barrelize init root/.barrelize')
-    .action(async (path = '.barrelize') => {
-      await runInitCommand(path);
-    });
+    .action((path = '.barrelize') => runInitCommand(path).catch(logError));
 
   cli.help();
   cli.version(version);
@@ -27,10 +25,6 @@ export function cliInit(): void {
   try {
     cli.parse();
   } catch (error) {
-    if (error instanceof Error) {
-      logError(error.message);
-    } else {
-      logError(String(error));
-    }
+    logError(String(error));
   }
 }

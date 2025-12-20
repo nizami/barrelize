@@ -1,10 +1,9 @@
-import {BarrelConfig, Config, DEFAULT_CONFIG, ExportPathInfo} from '#lib';
+import {BarrelConfig, Config, ExportPathInfo} from '#lib';
 
 export function formatExportLine(path: ExportPathInfo, config: Config, barrelConfig: BarrelConfig): string {
-  const bracketSpacingIfNeeded =
-    barrelConfig.bracketSpacing ?? config.bracketSpacing ?? DEFAULT_CONFIG.bracketSpacing ? ' ' : '';
-  const quote = barrelConfig.singleQuote ?? config.singleQuote ?? DEFAULT_CONFIG.singleQuote ? "'" : '"';
-  const semiIfNeeded = barrelConfig.semi ?? config.semi ?? DEFAULT_CONFIG.semi ? ';' : '';
+  const bracketSpacingIfNeeded = barrelConfig.bracketSpacing ?? config.bracketSpacing ? ' ' : '';
+  const quote = barrelConfig.singleQuote ?? config.singleQuote ? "'" : '"';
+  const semiIfNeeded = barrelConfig.semi ?? config.semi ? ';' : '';
   const fromPartText = `from ${quote}./${path.modifiedPath}${quote}${semiIfNeeded}`;
 
   if (!path.exports?.length) {
