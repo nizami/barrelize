@@ -14,28 +14,22 @@ import {dirname, join, resolve} from 'node:path';
 
 const BARRELIZE_CONTENT_REGEX = /(?<=\/\/ *barrelize-start *\n)[\s\S]*(?= *\/\/ *barrelize-end)/;
 
-export async function generateBarrels(
-  configDir: string,
-  configPath: string,
-  config: Config,
-  silentIgnore = false,
-): Promise<void> {
+export async function generateBarrels(configDir: string, config: Config): Promise<void> {
   for (const barrelConfig of config.barrels) {
-    const indexFileBasePath = barrelConfig.name ;
-    const indexFileRelativePath = join(barrelConfig.root , indexFileBasePath);
+    const indexFileBasePath = barrelConfig.name;
+    const indexFileRelativePath = join(barrelConfig.root, indexFileBasePath);
     const indexFileAbsolutePath = resolve(configDir, indexFileRelativePath);
     const indexDirectory = dirname(indexFileAbsolutePath);
 
     if (!existsSync(indexDirectory)) {
       logWarning(`Index directory '${indexDirectory}' does not exist - skipping`);
-      logWarning(`  Please verify the 'root' path in your '${configPath}' configuration`);
+      logWarning(`  Please verify the 'root' path in your barrelize configuration`);
 
       continue;
     }
 
     const newExportPaths = await handlePaths(configDir, barrelConfig);
-    const insertFinalNewline =
-      barrelConfig.insertFinalNewline ?? config.insertFinalNewline;
+    const insertFinalNewline = barrelConfig.insertFinalNewline ?? config.insertFinalNewline;
 
     let newContent = newExportPaths.map((x) => formatExportLine(x, config, barrelConfig)).join('\n');
 
@@ -48,13 +42,11 @@ export async function generateBarrels(
       newContent += insertFinalNewline || barrelizeMatch ? '\n' : '';
 
       if ((barrelizeContent ?? oldFileContent) === newContent) {
-        if (!silentIgnore) {
-          console.log(
-            colorize('IGNORE', TerminalColor.GRAY),
-            colorize(indexFileRelativePath, TerminalColor.CYAN),
-            colorize(exportedText, TerminalColor.GRAY),
-          );
-        }
+        console.log(
+          colorize('IGNORE', TerminalColor.GRAY),
+          colorize(indexFileRelativePath, TerminalColor.CYAN),
+          colorize(exportedText, TerminalColor.GRAY),
+        );
 
         continue;
       }

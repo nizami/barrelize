@@ -8,7 +8,7 @@ import {
   tryParseRegex,
 } from '#lib';
 import {glob} from 'glob';
-import {resolve} from 'node:path';
+import {parse, resolve} from 'node:path';
 import z from 'zod';
 
 export async function handlePathExports(
@@ -58,9 +58,19 @@ async function fillExports(
     const allExportInfos = await getExportedMembers(resolvedPath);
     const map = new Map<string, ExportInfo>();
 
-    const setMap = (fromMember: string, toMember: string, exportKind?: ExportInfo['exportKind']) => {
+    const fileName = parse(pathInfo.originalPath).name;
+
+    const setMap = (
+      fromMember: string,
+      toMember: string,
+      exportKind?: ExportInfo['exportKind'],
+      exportName?: string,
+    ) => {
       fromMember = fromMember.trim();
       toMember = toMember.trim();
+
+      toMember = toMember.replace(/\@fileName/g, fileName);
+      toMember = toMember.replace(/\@exportName/g, exportName || fromMember);
 
       if (map.has(toMember) && fromMember === toMember) {
         return;
@@ -73,7 +83,7 @@ async function fillExports(
       if (typeof member === 'string') {
         const exportInfo = allExportInfos.find((x) => x.name === member);
 
-        setMap(member, toMember ?? member, exportInfo?.exportKind);
+        setMap(member, toMember ?? member, exportInfo?.exportKind, exportInfo?.exportName);
 
         continue;
       }
@@ -81,7 +91,12 @@ async function fillExports(
       const foundExportInfos = allExportInfos.filter((x) => member.test(x.name));
 
       for (const exportInfo of foundExportInfos) {
-        setMap(exportInfo.name, exportInfo.name.replace(member, toMember ?? exportInfo.name));
+        setMap(
+          exportInfo.name,
+          exportInfo.name.replace(member, toMember ?? exportInfo.name),
+          exportInfo.exportKind,
+          exportInfo.exportName,
+        );
       }
     }
 

@@ -130,6 +130,66 @@ Create a `.barrelize` file in your project root. The configuration file uses JSO
 }
 ```
 
+### Using Export Variables
+
+You can use variables in export aliases to dynamically name exports based on file names or export names:
+
+```jsonc
+{
+  "barrels": [
+    {
+      "root": "src",
+      "name": "index.ts",
+      "include": ["components/**/*.tsx"],
+      "exports": {
+        "components/**/*.tsx": [
+          "default as @fileName" // Use file name
+        ]
+      }
+    }
+  ]
+}
+```
+
+**Supported Variables:**
+
+- `@fileName` - The file name without extension (e.g., "Button" from "Button.tsx")
+- `@exportName` - The export name of the default export from the code
+
+**Examples:**
+
+```typescript
+// components/button.tsx
+export default function ButtonComponent() {...}
+```
+
+Using `"default as @fileName"`:
+
+```typescript
+export {default as button} from './components/button';
+```
+
+Using `"default as @exportName"`:
+
+```typescript
+export {default as ButtonComponent} from './components/button';
+```
+
+Using both in one pattern `"default as @fileName@exportName"`:
+
+```typescript
+export {default as buttonButtonComponent} from './components/button';
+```
+
+**Notes:**
+
+- Works with nested directory paths (e.g., `utils/parsers/json.ts` → fileName is `json`)
+- Preserves dots in file names (e.g., `my.component.tsx` → `my.component`)
+- `@exportName` works with function, class, and variable default exports
+- For anonymous default exports (arrow functions without a name), `@exportName` falls back to the member name ("default")
+- Variables can be combined and used multiple times in the same alias
+- Works alongside other export patterns and with the `replace` config option
+
 ## Example
 
 Before:

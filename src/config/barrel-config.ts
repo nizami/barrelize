@@ -10,13 +10,15 @@ export const $BarrelConfig = z.object({
     .describe('Name of the index file (e.g. index.ts or some/path/index.ts)'),
 
   include: z
-    .array(z.string())
+    .string()
+    .array()
     .optional()
     .default(['**/*.ts'])
     .describe('Files to include in the barrel (supports glob patterns)'),
 
   exclude: z
-    .array(z.string())
+    .string()
+    .array()
     .optional()
     .default(['**/*.test.ts'])
     .describe('Files to exclude from the barrel (supports glob patterns)'),
@@ -52,13 +54,13 @@ export const $BarrelConfig = z.object({
     .default({'**/*.ts': []})
     .describe('Configuration for exports in barrel files'),
 
-  bracketSpacing: z.boolean().optional().default(true).describe('Use spaces between brackets in exports'),
+  bracketSpacing: z.boolean().optional().describe('Use spaces between brackets in exports'),
 
-  singleQuote: z.boolean().optional().default(true).describe('Use single quotes for exports'),
+  singleQuote: z.boolean().optional().describe('Use single quotes for exports'),
 
-  semi: z.boolean().optional().default(true).describe('Add semicolons after exports'),
+  semi: z.boolean().optional().describe('Add semicolons after exports'),
 
-  insertFinalNewline: z.boolean().optional().default(true).describe('Add newline at end of file'),
+  insertFinalNewline: z.boolean().optional().describe('Add newline at end of file'),
 });
 
 export type BarrelConfig = z.infer<typeof $BarrelConfig>;

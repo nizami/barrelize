@@ -1,5 +1,6 @@
 import {ExtractExportsOptions, logDebug} from '#lib';
 import {parse, ParseResult} from '@babel/parser';
+import {ExportDefaultDeclaration} from '@babel/types';
 import {existsSync} from 'node:fs';
 import {readFile} from 'node:fs/promises';
 import {extname} from 'node:path';
@@ -7,6 +8,7 @@ import {extname} from 'node:path';
 export type ExportInfo = {
   name: string;
   exportKind?: 'type' | 'value' | null | undefined;
+  exportName?: string | undefined;
 };
 
 export async function extractExports(sourcePath: string): Promise<ExportInfo[]> {
@@ -65,7 +67,11 @@ async function extractExportsFromAst(ast: ParseResult, options: ExtractExportsOp
         });
       }
     } else if (node.type === 'ExportDefaultDeclaration') {
-      exports.push({name: 'default', exportKind: node.exportKind});
+      exports.push({
+        name: 'default',
+        exportKind: node.exportKind,
+        exportName: extractDeclarationName(node.declaration),
+      });
     } else if (node.type === 'ExportAllDeclaration') {
       if (options.recursive) {
         const normalizedPath = normalizeSourcePath(node.source.value, options);
@@ -81,6 +87,22 @@ async function extractExportsFromAst(ast: ParseResult, options: ExtractExportsOp
   }
 
   return exports;
+}
+
+function extractDeclarationName(declaration: ExportDefaultDeclaration['declaration']): string | undefined {
+  if (declaration.type === 'Identifier') {
+    return declaration.name;
+  }
+
+  if (
+    declaration.type === 'TSDeclareFunction' ||
+    declaration.type === 'FunctionDeclaration' ||
+    declaration.type === 'ClassDeclaration'
+  ) {
+    return declaration.id?.name;
+  }
+
+  return undefined;
 }
 
 function parseFileContent(fileContent: string): ParseResult {

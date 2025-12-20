@@ -6,8 +6,8 @@ export async function runGenerateCommand(options: GenerateCommandOptions): Promi
   const configDir = resolve(dirname(options.configPath));
 
   if (options.watch) {
-    await watchBarrels(configDir, options.configPath, config);
+    await watchBarrels(configDir, config);
   } else {
-    await generateBarrels(configDir, options.configPath, config);
+    await generateBarrels(configDir, config);
   }
 }
