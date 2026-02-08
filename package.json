@@ -1,6 +1,6 @@
 {
   "name": "barrelize",
-  "version": "1.7.2",
+  "version": "1.7.3",
   "description": "Automatically generating index (barrel) files",
   "author": "Nizami",
   "license": "MIT",
