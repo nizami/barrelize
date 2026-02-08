@@ -3,28 +3,28 @@
   "type": "object",
   "properties": {
     "$schema": {
-      "description": "Path to the JSON schema file that will be used for configuration validation",
       "default": "node_modules/barrelize/schema.json",
+      "description": "Path to the JSON schema file that will be used for configuration validation",
       "type": "string"
     },
     "bracketSpacing": {
-      "description": "Whether to add spaces between brackets in export statements",
       "default": true,
+      "description": "Whether to add spaces between brackets in export statements",
       "type": "boolean"
     },
     "singleQuote": {
-      "description": "Whether to use single quotes instead of double quotes for exports",
       "default": true,
+      "description": "Whether to use single quotes instead of double quotes for exports",
       "type": "boolean"
     },
     "semi": {
-      "description": "Whether to append semicolons to export statements",
       "default": true,
+      "description": "Whether to append semicolons to export statements",
       "type": "boolean"
     },
     "insertFinalNewline": {
-      "description": "Whether to append a newline character at the end of generated files",
       "default": true,
+      "description": "Whether to append a newline character at the end of generated files",
       "type": "boolean"
     },
     "barrels": {
@@ -46,72 +46,72 @@
         "type": "object",
         "properties": {
           "root": {
-            "description": "Root directory to start from (support glob pattern)",
             "default": "src",
+            "description": "Root directory to start from (support glob pattern)",
             "type": "string"
           },
           "name": {
-            "description": "Name of the index file (e.g. index.ts or some/path/index.ts)",
             "default": "index.ts",
+            "description": "Name of the index file (e.g. index.ts or some/path/index.ts)",
             "type": "string"
           },
           "include": {
-            "description": "Files to include in the barrel (supports glob patterns)",
             "default": [
               "**/*.ts"
             ],
+            "description": "Files to include in the barrel (supports glob patterns)",
             "type": "array",
             "items": {
               "type": "string"
             }
           },
           "exclude": {
-            "description": "Files to exclude from the barrel (supports glob patterns)",
             "default": [
               "**/*.test.ts"
             ],
+            "description": "Files to exclude from the barrel (supports glob patterns)",
             "type": "array",
             "items": {
               "type": "string"
             }
           },
           "order": {
-            "description": "Ordering of exports",
             "default": [],
+            "description": "Ordering of exports",
             "type": "array",
             "items": {
               "type": "string"
             }
           },
           "replace": {
-            "description": "String or regular expression patterns to find and replace in export paths (e.g. {\"\\.ts$\": \"\", \"my-custom-export-path.ts\": \"my-path.ts\"})",
             "default": {
               "/\\.ts$/": ""
             },
+            "description": "String or regular expression patterns to find and replace in export paths (e.g. {\"\\.ts$\": \"\", \"my-custom-export-path.ts\": \"my-path.ts\"})",
             "type": "object",
             "propertyNames": {
               "type": "string"
             },
             "additionalProperties": {
-              "description": "String or regular expression pattern to find in export paths (e.g. \"\\.ts$\", \"my-custom-export-path.ts\")",
-              "type": "string"
+              "type": "string",
+              "description": "String or regular expression pattern to find in export paths (e.g. \"\\.ts$\", \"my-custom-export-path.ts\")"
             }
           },
           "exports": {
-            "description": "Configuration for exports in barrel files",
             "default": {
               "**/*.ts": []
             },
+            "description": "Configuration for exports in barrel files",
             "type": "object",
             "propertyNames": {
               "type": "string"
             },
             "additionalProperties": {
-              "description": "Glob pattern exports file with string or regular expression patterns (e.g. \"**/*service.ts\": [\"* as lib\", \"/(.+)Config$/ as $1LibConfig\", \"util\"])",
               "type": "array",
               "items": {
                 "type": "string"
-              }
+              },
+              "description": "Glob pattern exports file with string or regular expression patterns (e.g. \"**/*service.ts\": [\"* as lib\", \"/(.+)Config$/ as $1LibConfig\", \"util\"])"
             }
           },
           "bracketSpacing": {
