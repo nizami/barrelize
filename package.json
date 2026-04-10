@@ -38,18 +38,18 @@
     "test": "vitest run"
   },
   "devDependencies": {
-    "@babel/parser": "^7.29.0",
-    "@microsoft/api-extractor": "^7.57.2",
-    "@types/node": "^25.3.0",
-    "cac": "^6.7.14",
+    "@babel/parser": "^7.29.2",
+    "@microsoft/api-extractor": "^7.58.2",
+    "@types/node": "^25.6.0",
+    "cac": "^7.0.0",
     "chokidar": "^5.0.0",
     "glob": "^13.0.6",
     "json5": "^2.2.3",
     "tsx": "^4.21.0",
-    "typescript": "~5.9.3",
+    "typescript": "~5.9.2",
     "unplugin-dts": "^1.0.0-beta.6",
-    "vite": "^7.3.1",
-    "vitest": "^4.0.18",
+    "vite": "^8.0.8",
+    "vitest": "^4.1.4",
     "zod": "^4.3.6"
   }
 }

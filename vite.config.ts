@@ -25,7 +25,6 @@ export default defineConfig({
       fileName: () => `index.js`,
     },
     rollupOptions: {
-      cache: false,
       external: [
         'vite',
         'vitest',
