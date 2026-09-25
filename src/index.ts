@@ -5,6 +5,7 @@ export * from './cli/commands/init-command.js';
 export * from './config/barrel-config.js';
 export * from './config/config.js';
 export * from './config/parse-config.js';
+export * from './config/resolve-default-config.js';
 export * from './extract-exports/extract-exports-options.js';
 export * from './extract-exports/extract-exports.js';
 export * from './generate/export-path-info.js';

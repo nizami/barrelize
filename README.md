@@ -54,11 +54,12 @@ npx barrelize
 
 ### `barrelize init [config path]`
 
-Creates a `.barrelize.json` configuration file in your project.
+Creates a `.barrelize.json` configuration file in your project. Alternatively, you may specify an `.mjs`, `.cjs`, or `.js` file extension to create a configuration module.
 
 ```bash
 npx barrelize init                # Creates .barrelize.json in current directory
 npx barrelize init barrelize.json # Creates config at specified path
+npx barrelize init .barrelize.mjs # Creates .barrelize.mjs
 ```
 
 ### `barrelize [config path]`
