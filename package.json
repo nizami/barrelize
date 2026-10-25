@@ -39,19 +39,19 @@
     "prepublish": "npm run build"
   },
   "devDependencies": {
-    "@babel/parser": "^8.0.4",
-    "@microsoft/api-extractor": "^7.58.12",
-    "@types/node": "^26.2.0",
-    "cac": "^7.0.0",
-    "chokidar": "^5.0.0",
+    "@babel/parser": "^8.0.8",
+    "@microsoft/api-extractor": "^7.59.4",
+    "@types/node": "^26.6.5",
+    "cac": "^7.1.0",
+    "chokidar": "^6.0.0",
     "glob": "^13.0.6",
     "json5": "^2.2.3",
-    "tsx": "^4.23.12",
+    "tsx": "^4.23.15",
     "typescript": "~6.0.3",
-    "unplugin-dts": "^1.0.3",
-    "vite": "^8.2.1",
-    "vitest": "^4.1.10",
-    "zod": "^4.4.3"
+    "unplugin-dts": "^1.1.2",
+    "vite": "^8.3.5",
+    "vitest": "^5.0.5",
+    "zod": "^4.6.7"
   },
   "allowScripts": {
     "fsevents@2.3.3": true,
