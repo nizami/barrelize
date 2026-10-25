@@ -1,7 +1,9 @@
 import {colorize, TerminalColor} from '#lib';
 
-export function logError(message: string): void {
-  console.log(colorize(message, TerminalColor.RED));
+export function logError(error: unknown): void {
+  const message = error instanceof Error ? error.message : String(error);
+  console.error(colorize(`✖ ${message}`, TerminalColor.RED));
+  process.exitCode = 1;
 }
 
 export function logWarning(message: string): void {

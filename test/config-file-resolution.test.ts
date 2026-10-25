@@ -477,3 +477,24 @@ describe('init command default config path', () => {
     }
   });
 });
+
+describe('parseConfig error handling', () => {
+  test('should throw a friendly error when config file does not exist', async () => {
+    const {parseConfig} = await import('../src/config/parse-config.js');
+
+    const missingPath = join(fixturesDir, 'nonexistent', '.barrelize.json');
+
+    await expect(parseConfig(missingPath)).rejects.toThrow(
+      `Barrelize config file not found: '${missingPath}'.`,
+    );
+  });
+
+  test('should throw a friendly error when path points to a directory', async () => {
+    const {parseConfig} = await import('../src/config/parse-config.js');
+
+    const dirPath = join(fixturesDir, 'is-a-dir');
+    mkdirSync(dirPath, {recursive: true});
+
+    await expect(parseConfig(dirPath)).rejects.toThrow(`Barrelize config file not found: '${dirPath}'.`);
+  });
+});

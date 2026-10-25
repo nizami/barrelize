@@ -1,6 +1,6 @@
 import {$Config, Config} from '#lib';
 import JSON5 from 'json5';
-import {statSync} from 'node:fs';
+import {existsSync, statSync} from 'node:fs';
 import {readFile} from 'node:fs/promises';
 import {extname} from 'node:path';
 import {pathToFileURL} from 'node:url';
@@ -8,8 +8,11 @@ import z from 'zod';
 
 export async function parseConfig(configPath: string): Promise<Config> {
   try {
-    if (!statSync(configPath).isFile()) {
-      throw new Error(`Couldn't find barrelize config file path: '${configPath}'`);
+    if (!existsSync(configPath) || !statSync(configPath).isFile()) {
+      throw new Error(
+        `Barrelize config file not found: '${configPath}'.\n` +
+          `Run 'barrelize init' to create one, or pass a valid path as an argument.`,
+      );
     }
 
     const config = await loadConfig(configPath);
