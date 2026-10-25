@@ -2,7 +2,7 @@ import {generateBarrels, GenerateCommandOptions, parseConfig, watchBarrels} from
 import {dirname, resolve} from 'node:path';
 
 export async function runGenerateCommand(options: GenerateCommandOptions): Promise<void> {
-  const config = parseConfig(options.configPath);
+  const config = await parseConfig(options.configPath);
   const configDir = resolve(dirname(options.configPath));
 
   if (options.watch) {
